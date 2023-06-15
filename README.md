@@ -270,12 +270,20 @@ k8sapply a.yml b.yml
 k8sdelete a.yml b.yml
 ```
 
-28. k8slabel: 切换是否显示标签，影响各个资源列表的显示
+28. k8slabel: 切换是否显示标签，会改写配置文件`~/.kube/k8scmd.yml`, 用于控制全局各个资源列表的显示
 ```sh
 k8slabel
 ```
 
-29. k8soutput: 指定输出格式，影响各个资源列表的显示
+29. k8soutput: 指定输出格式，会改写配置文件`~/.kube/k8scmd.yml`, 用于控制全局各个资源列表的显示
 ```sh
 k8sdelete a.yml b.yml
+```
+
+## 全局配置 
+配置文件`~/.kube/k8scmd.yml`, 用于控制全局各个资源列表的显示
+```yaml
+# 控制全局各个资源列表的显示
+output-format: wide # 输出格式，如wide,yaml,json
+show-labels: false # 显示标签
 ```
