@@ -34,24 +34,32 @@ def run_cmd(cmd):
 
 # 执行k8s资源的get/describe/delete命令
 def run_res_cmd(res):
+    cmd = get_res_cmd(res)
+    run_cmd(cmd)
+
+# 生成k8s资源的get/describe/delete命令
+def get_res_cmd(res):
     deleting = has_delete_arg()
     name = get_res_name(res)
+    # 1 delete
     if deleting:
-        cmd = f'kubectl delete {res} {name} $2_'
-    elif name is None: # 无资源名
-        # 根据配置构建显示选项
-        config = read_config()
-        # option = '-o wide --show-labels'
-        option = ''
-        if '-o' not in sys.argv:
-            option = f"-o {config['output-format']}"
-        if config['show-labels']:
-            option += ' --show-labels'
-        # 拼接命令
-        cmd = f'kubectl get {res} -A {option} $1_'
-    else: # 有资源名
-        cmd = f'kubectl describe {res} {name} $2_'
-    run_cmd(cmd)
+        return f'kubectl delete {res} {name} $2_'
+
+    # 2 有资源名: describe 详情
+    if name is not None:
+        return f'kubectl describe {res} {name} $2_'
+
+    # 3 无资源名: get 列表
+    # 根据配置构建显示选项
+    config = read_config()
+    # option = '-o wide --show-labels'
+    option = ''
+    if '-o' not in sys.argv:
+        option = f"-o {config['output-format']}"
+    if config['show-labels']:
+        option += ' --show-labels'
+    # 拼接命令
+    return f'kubectl get {res} -A {option} $1_'
 
 # 从命令行参数选出并删掉 -d
 def has_delete_arg():

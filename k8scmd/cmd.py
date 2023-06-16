@@ -28,6 +28,29 @@ def k8spod():
 def k8ssvc():
     run_res_cmd('svc')
 
+def k8ssvc2():
+    cmd = get_res_cmd('svc')
+    # get转pandas，并构建http url列，方便用户复制url
+    if ' get ' in cmd:
+        cmd = replace_sysarg(cmd)
+        print(cmd)
+        url_col = []
+        df = run_command_return_dataframe(cmd)
+        for i, row in df.iterrows():
+            ip = row['CLUSTER-IP']
+            ports = re.findall(f'\d+(?=\/)', row['PORT(S)'])
+            urls = []
+            for port in ports:
+                port = int(port)
+                if port >= 30000:
+                    url = f"http://{ip}:{port}"
+                    urls.append(url)
+            url_col.append(','.join(urls))
+        df['url'] = url_col
+        print(df)
+        return
+    run_cmd(cmd)
+
 def k8src():
     run_res_cmd('rc')
 
@@ -99,7 +122,7 @@ def k8sdelete():
     run_cmd("kubectl delete -f $1_")
 
 # 切换是否显示标签
-def k8slabel():
+def k8sshowlabel():
     config = read_config()
     config['show-labels'] = not config['show-labels']
     write_config(config)
@@ -121,4 +144,5 @@ def k8soutput():
 
 # 测试
 if __name__ == '__main__':
-    k8sexec()
+    # k8sexec()
+    k8ssvc()

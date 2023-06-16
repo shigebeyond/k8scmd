@@ -56,6 +56,7 @@ k8spod 资源名 -d
 # 查看所有Service资源列表
 k8ssvc
 k8ssvc -o yaml
+k8ssvc2 # 比 k8ssvc 多打印http url列，方便用户复制url，只针对30000以上的端口
 # 查看单个Service资源详情
 k8ssvc 资源名
 # 删除单个Service资源
@@ -270,9 +271,9 @@ k8sapply a.yml b.yml
 k8sdelete a.yml b.yml
 ```
 
-28. k8slabel: 切换是否显示标签，会改写配置文件`~/.kube/k8scmd.yml`, 用于控制全局各个资源列表的显示
+28. k8sshowlabel: 切换是否显示标签，会改写配置文件`~/.kube/k8scmd.yml`, 用于控制全局各个资源列表的显示
 ```sh
-k8slabel
+k8sshowlabel
 ```
 
 29. k8soutput: 指定输出格式，会改写配置文件`~/.kube/k8scmd.yml`, 用于控制全局各个资源列表的显示
