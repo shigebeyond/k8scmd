@@ -54,18 +54,20 @@ def get_res_cmd(res):
     # 根据配置构建显示选项
     config = read_config()
     # option = '-o wide --get-labels'
-    option = ''
+    # 3.1 过滤命名空间
+    if config['get-ns']:
+        option = f"-n {config['get-ns']}"
+    else:
+        option = '-A'
+    # 3.2 输出格式
     if '-o' not in sys.argv:
-        option = f"-o {config['get-output']}"
+        option += f" -o {config['get-output']}"
+    # 3.3 显示标签
     if config['get-labels']:
         option += ' --show-labels'
-    # 过滤命名空间
-    if config['get-ns']:
-        ns = f"-n {config['get-ns']}"
-    else:
-        ns = '-A'
+
     # 拼接命令
-    return f'kubectl get {res} {ns} {option} $1_'
+    return f'kubectl get {res} {option} $1_'
 
 # 从命令行参数选出并删掉 -d
 def has_delete_arg():
