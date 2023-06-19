@@ -14,6 +14,15 @@ sudo systemctl restart kubelet
 kubectl get nodes'''
     run_cmd(cmd)
 
+def k8scluster():
+    # 集群状态
+    # run_res_cmd('cs')
+    cmd = get_res_cmd('cs')
+    if ' get ' in cmd and ' -o wide' in cmd:
+        run_cmd('kubectl cluster-info') # 先输出集群信息
+        print("\n--------------------------------\n")
+    run_cmd(cmd)
+
 def k8sns():
     run_res_cmd('ns')
 

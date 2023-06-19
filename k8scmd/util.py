@@ -48,6 +48,9 @@ def get_res_cmd(res):
 
     # 2 有资源名: describe 详情
     if name is not None:
+        if '-o' in sys.argv: # 有指定输出就用get
+            return f'kubectl get {res} {name} $2_'
+        # 否则用 describe
         return f'kubectl describe {res} {name} $2_'
 
     # 3 无资源名: get 列表
@@ -86,7 +89,7 @@ def get_res_name(res, required = True):
     name = sys.argv[1]
     if name.startswith('-'): # get命令，如 -o yaml，是拿不到资源名的
         return None
-    if res != 'no' and res != 'ns': # 一般资源需带命名空间
+    if res != 'no' and res != 'ns' and res != 'cs': # 一般资源需带命名空间
         name = name + ' -n ' + get_ns(res, name)
     return name
 

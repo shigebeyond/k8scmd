@@ -26,6 +26,7 @@ k8sns
 k8sns -o yaml
 # 查看单个Namespace资源详情
 k8sns 资源名
+k8sns 资源名 -o yaml
 # 删除单个Namespace资源
 k8sns 资源名 -d
 ```
@@ -37,6 +38,7 @@ k8sno
 k8sno -o yaml
 # 查看单个Node资源详情
 k8sno 资源名
+k8sno 资源名 -o yaml
 # 删除单个Node资源
 k8sno 资源名 -d
 ```
@@ -48,6 +50,7 @@ k8spod
 k8spod -o yaml
 # 查看单个Pod资源详情
 k8spod 资源名
+k8spod 资源名 -o yaml
 # 删除单个Pod资源
 k8spod 资源名 -d
 ```
@@ -60,6 +63,7 @@ k8ssvc -o yaml
 k8ssvc2 # 比 k8ssvc 多打印http url列，方便用户复制url，只针对30000以上的端口
 # 查看单个Service资源详情
 k8ssvc 资源名
+k8ssvc 资源名 -o yaml
 # 删除单个Service资源
 k8ssvc 资源名 -d
 ```
@@ -71,6 +75,7 @@ k8src
 k8src -o yaml
 # 查看单个ReplicationController资源详情
 k8src 资源名
+k8src 资源名 -o yaml
 # 删除单个ReplicationController资源
 k8src 资源名 -d
 ```
@@ -82,6 +87,7 @@ k8srs
 k8srs -o yaml
 # 查看单个ReplicaSet资源详情
 k8srs 资源名
+k8srs 资源名 -o yaml
 # 删除单个ReplicaSet资源
 k8srs 资源名 -d
 ```
@@ -93,6 +99,7 @@ k8sds
 k8sds -o yaml
 # 查看单个DaemonSet资源详情
 k8sds 资源名
+k8sds 资源名 -o yaml
 # 删除单个DaemonSet资源
 k8sds 资源名 -d
 ```
@@ -104,6 +111,7 @@ k8ssts
 k8ssts -o yaml
 # 查看单个StatefulSet资源详情
 k8ssts 资源名
+k8ssts 资源名 -o yaml
 # 删除单个StatefulSet资源
 k8ssts 资源名 -d
 ```
@@ -115,6 +123,7 @@ k8sdeploy
 k8sdeploy -o yaml
 # 查看单个Deployment资源详情，等价于 kubectl describe deployment 资源名 + kubectl rollout status deployment 资源名
 k8sdeploy 资源名
+k8sdeploy 资源名 -o yaml
 # 删除单个Deployment资源
 k8sdeploy 资源名 -d
 
@@ -133,6 +142,7 @@ k8sconfig
 k8sconfig -o yaml
 # 查看单个ConfigMap资源详情
 k8sconfig 资源名
+k8sconfig 资源名 -o yaml
 # 删除单个ConfigMap资源
 k8sconfig 资源名 -d
 ```
@@ -144,6 +154,7 @@ k8ssecret
 k8ssecret -o yaml
 # 查看单个Secret资源详情
 k8ssecret 资源名
+k8ssecret 资源名 -o yaml
 # 删除单个Secret资源
 k8ssecret 资源名 -d
 ```
@@ -155,6 +166,7 @@ k8sendpoint
 k8sendpoint -o yaml
 # 查看单个Endpoint资源详情
 k8sendpoint 资源名
+k8sendpoint 资源名 -o yaml
 # 删除单个Endpoint资源
 k8sendpoint 资源名 -d
 ```
@@ -166,6 +178,7 @@ k8sevent
 k8sevent -o yaml
 # 查看单个Event资源详情
 k8sevent 资源名
+k8sevent 资源名 -o yaml
 # 删除单个Event资源
 k8sevent 资源名 -d
 ```
@@ -177,6 +190,7 @@ k8sjob
 k8sjob -o yaml
 # 查看单个Job资源详情
 k8sjob 资源名
+k8sjob 资源名 -o yaml
 # 删除单个Job资源
 k8sjob 资源名 -d
 ```
@@ -188,6 +202,7 @@ k8singress
 k8singress -o yaml
 # 查看单个Ingress资源详情
 k8singress 资源名
+k8singress 资源名 -o yaml
 # 删除单个Ingress资源
 k8singress 资源名 -d
 ```
@@ -199,6 +214,7 @@ k8scronjob
 k8scronjob -o yaml
 # 查看单个Cronjob资源详情
 k8scronjob 资源名
+k8scronjob 资源名 -o yaml
 # 删除单个Cronjob资源
 k8scronjob 资源名 -d
 ```
@@ -210,6 +226,7 @@ k8spv
 k8spv -o yaml
 # 查看单个PersistentVolume资源详情
 k8spv 资源名
+k8spv 资源名 -o yaml
 # 删除单个PersistentVolume资源
 k8spv 资源名 -d
 ```
@@ -221,6 +238,7 @@ k8spvc
 k8spvc -o yaml
 # 查看单个PersistentVolumeClaim资源详情
 k8spvc 资源名
+k8spvc 资源名 -o yaml
 # 删除单个PersistentVolumeClaim资源
 k8spvc 资源名 -d
 ```
@@ -232,6 +250,7 @@ k8ssc
 k8ssc -o yaml
 # 查看单个StorageClass资源详情
 k8ssc 资源名
+k8ssc 资源名 -o yaml
 # 删除单个StorageClass资源
 k8ssc 资源名 -d
 ```
@@ -253,9 +272,10 @@ k8sbash nginx
 
 23. k8slog: 查看pod日志
 ```sh
-k8slog Pod资源名
+k8slog Pod资源名 [-f]
 # 例如
 k8slog nginx
+k8slog nginx -f
 ```
 
 24. k8sletlog: 查看kubelet服务日志
