@@ -3,7 +3,8 @@
 # k8scmd - k8s命令精简版
 ## 概述
 k8s命令很多，难记又难打，非常艰难；
-我直接用python做了一个简化版的命令，易记又易打，非常简单；同时对资源相关的命令，会自动填充资源的命名空间，不用用户手动写。
+我直接用python做了一个简化版的命令，易记又易打，非常简单；
+同时对资源相关的命令，会自动填充资源的命名空间，不用用户操心也不用写。
 
 - 目前仅支持linux环境，windows环境未测试
 
@@ -278,7 +279,12 @@ k8sapply a.yml b.yml
 k8sdelete a.yml b.yml
 ```
 
-28. k8shistory: 查看 Deployment 历史记录
+28. k8sscale: 扩容
+```sh
+k8sscale Deployment资源名 副本数
+```
+
+29. k8shistory: 查看 Deployment 历史记录
 ```sh
 # 查看所有历史版本
 k8shistory Deployment资源名
@@ -286,7 +292,7 @@ k8shistory Deployment资源名
 k8shistory Deployment资源名 版本号
 ```
 
-29. k8srollback: 查看 Deployment 历史记录
+30. k8srollback: 查看 Deployment 历史记录
 ```sh
 # 回滚到上一个版本
 k8srollback Deployment资源名
@@ -294,20 +300,32 @@ k8srollback Deployment资源名
 k8srollback Deployment资源名 版本号
 ```
 
-30. k8sshowlabel: 切换是否显示标签，会改写配置文件`~/.kube/k8scmd.yml`, 用于控制全局各个资源列表的显示
+31. k8sgetlabels: 切换是否显示标签，会改写配置文件`~/.kube/k8scmd.yml`, 用于控制全局各个资源列表(即kubectl get命令)的显示
 ```sh
-k8sshowlabel
+k8sgetlabels
 ```
 
-31. k8soutput: 指定输出格式，会改写配置文件`~/.kube/k8scmd.yml`, 用于控制全局各个资源列表的显示
+32. k8sgetoutput: 指定输出格式，会改写配置文件`~/.kube/k8scmd.yml`, 用于控制全局各个资源列表(即kubectl get命令)的显示
 ```sh
-k8sdelete a.yml b.yml
+# 指定输出格式
+k8sgetoutput yaml
+# 无指定输出格式，则在wide,yaml之间切换
+k8sgetoutput
+```
+
+33. k8sgetns: 指定过滤的命名空间，会改写配置文件`~/.kube/k8scmd.yml`, 用于控制全局各个资源列表(即kubectl get命令)的显示
+```sh
+# 指定过滤的命名空间
+k8sgetns yaml
+# 无指定过滤的命名空间，则为全部命名空间
+k8sgetns
 ```
 
 ## 全局配置 
-配置文件`~/.kube/k8scmd.yml`, 用于控制全局各个资源列表的显示
+配置文件`~/.kube/k8scmd.yml`, 用于控制全局各个资源列表(即kubectl get命令)的显示
 ```yaml
 # 控制全局各个资源列表的显示
-output-format: wide # 输出格式，如wide,yaml,json
-show-labels: false # 显示标签
+get-output: wide # 输出格式，如wide,yaml,json
+get-labels: false # 显示标签
+get-ns:  # 命名空间
 ```

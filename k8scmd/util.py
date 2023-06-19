@@ -10,8 +10,9 @@ from pyutilb.util import replace_sysarg
 config_file = os.environ['HOME'] + '/.kube/k8scmd.yml'
 # 默认配置
 default_config = {
-    'output-format': 'wide', # 输出格式
-    'show-labels': False # 是否显示标签
+    'get-output': 'wide', # 输出格式
+    'get-labels': False, # 是否显示标签
+    'get-ns': '' # 命名空间，默认显示全部
 }
 
 # 读配置
@@ -40,7 +41,7 @@ def run_res_cmd(res):
 # 生成k8s资源的get/describe/delete命令
 def get_res_cmd(res):
     deleting = has_delete_arg()
-    name = get_res_name(res)
+    name = get_res_name(res, False)
     # 1 delete
     if deleting:
         return f'kubectl delete {res} {name} $2_'
@@ -52,14 +53,19 @@ def get_res_cmd(res):
     # 3 无资源名: get 列表
     # 根据配置构建显示选项
     config = read_config()
-    # option = '-o wide --show-labels'
+    # option = '-o wide --get-labels'
     option = ''
     if '-o' not in sys.argv:
-        option = f"-o {config['output-format']}"
-    if config['show-labels']:
+        option = f"-o {config['get-output']}"
+    if config['get-labels']:
         option += ' --show-labels'
+    # 过滤命名空间
+    if config['get-ns']:
+        ns = f"-n {config['get-ns']}"
+    else:
+        ns = '-A'
     # 拼接命令
-    return f'kubectl get {res} -A {option} $1_'
+    return f'kubectl get {res} {ns} {option} $1_'
 
 # 从命令行参数选出并删掉 -d
 def has_delete_arg():
@@ -69,8 +75,10 @@ def has_delete_arg():
     return ret
 
 # 从命令行参数中资源名
-def get_res_name(res):
+def get_res_name(res, required = True):
     if len(sys.argv) == 1:  # 无资源名参数
+        if required:
+            raise Exception('缺少资源名参数')
         return None
 
     name = sys.argv[1]

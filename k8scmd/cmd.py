@@ -146,6 +146,14 @@ def k8sapply():
 def k8sdelete():
     run_cmd("kubectl delete -f $1_")
 
+def k8sscale():
+    # deploy资源名
+    name = get_res_name('deploy')
+    if len(sys.argv) < 3 or not sys.argv[2].isdigit():
+            raise Exception(f'第2个参数必须是int类型的副本数, 而传入的是{sys.argv[2]}')
+    # 执行命令
+    run_cmd(f"kubectl scale deploy {name} --replicas={sys.argv[2]}")
+
 def k8shistory():
     # deploy资源名
     name = get_res_name('deploy')
@@ -177,27 +185,37 @@ def get_deploy_version():
             raise Exception(f'第2个参数必须是int类型的版本号, 而传入的是{version}')
     return version
 
-
 # 切换是否显示标签
-def k8sshowlabel():
+def k8sgetlabels():
     config = read_config()
-    config['show-labels'] = not config['show-labels']
+    config['get-labels'] = not config['get-labels']
     write_config(config)
-    print(f"Set show-labels={config['show-labels']}")
+    print(f"Set get-labels={config['get-labels']}")
 
 # 指定输出格式
-def k8soutput():
+def k8sgetoutput():
     config = read_config()
     if len(sys.argv) == 1: # 无指定格式，则在wide,yaml之间切换
-        if config['output-format'] == 'yaml':
+        if config['get-output'] == 'yaml':
             of = 'wide'
         else:
             of = 'yaml'
     else:
         of = sys.argv[1]
-    config['output-format'] = of
+    config['get-output'] = of
     write_config(config)
-    print(f"Set output-format={config['output-format']}")
+    print(f"Set get-output={config['get-output']}")
+
+# 指定查看的命名空间：只查看该命名空间的资源
+def k8sgetns():
+    config = read_config()
+    if len(sys.argv) == 1:  # 无指定命名空间，则全部
+        of = ''
+    else:
+        of = sys.argv[1]
+    config['get-ns'] = of
+    write_config(config)
+    print(f"Set get-ns={config['get-ns']}")
 
 # 测试
 if __name__ == '__main__':
