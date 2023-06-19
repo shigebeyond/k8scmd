@@ -9,11 +9,9 @@ k8s命令简写
 '''
 
 def k8sstart():
-    cmd = '''
-sudo swapoff -a
+    cmd = '''sudo swapoff -a
 sudo systemctl restart kubelet
-kubectl get nodes
-'''
+kubectl get nodes'''
     run_cmd(cmd)
 
 def k8sns():
@@ -64,7 +62,34 @@ def k8ssts():
     run_res_cmd('sts')
 
 def k8sdeploy():
-    run_res_cmd('deploy')
+    # 1 暂停或恢复部署
+    if len(sys.argv) >= 3:
+        action = sys.argv[2]
+        if action == 'start': # 恢复部署
+            action = 'resume'
+        elif action == 'stop': # 暂停部署
+            action = 'pause'
+        elif action == 'restart': # 重启pod
+            action = 'restart'
+        else:
+            action = None
+        if action:
+            name = get_res_name('deploy')
+            cmd = f'kubectl rollout {action} deploy {name}'
+            run_cmd(cmd)
+            return
+
+    # 2 查看部署：kubectl get/describe deploy
+    # run_res_cmd('deploy')
+    cmd = get_res_cmd('deploy')
+    run_cmd(cmd)
+
+    # 3 查看部署状态： kubectl rollout status deploy
+    if ' describe ' in cmd:
+        print("\n--------------------------------\n")
+        name = get_res_name('deploy')
+        cmd = f'kubectl rollout status deploy {name}'
+        run_cmd(cmd)
 
 def k8sconfig():
     run_res_cmd('cm')
@@ -116,10 +141,42 @@ def k8screate():
     run_cmd("kubectl create -f $1_")
 
 def k8sapply():
-    run_cmd("kubectl apply -f $1_")
+    run_cmd("kubectl apply --record=true -f $1_")
 
 def k8sdelete():
     run_cmd("kubectl delete -f $1_")
+
+def k8shistory():
+    # deploy资源名
+    name = get_res_name('deploy')
+    # 命令
+    cmd = f"kubectl rollout history deploy {name}"
+    # 检查是否有指定版本: 第2个参数
+    version = get_deploy_version()
+    if version:
+        cmd += ' --revision=' + version
+    run_cmd(cmd)
+
+def k8srollback():
+    # deploy资源名
+    name = get_res_name('deploy')
+    # 命令
+    cmd = f"kubectl rollout undo deploy {name}"
+    # 检查是否有指定版本: 第2个参数
+    version = get_deploy_version()
+    if version:
+        cmd += ' --to-revision=' + version
+    run_cmd(cmd)
+
+# 获得deploy的版本参数
+def get_deploy_version():
+    version = None
+    if len(sys.argv) >= 3:
+        version = sys.argv[2]
+        if not version.isdigit():
+            raise Exception(f'第2个参数必须是int类型的版本号, 而传入的是{version}')
+    return version
+
 
 # 切换是否显示标签
 def k8sshowlabel():

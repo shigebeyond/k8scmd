@@ -3,7 +3,7 @@
 # k8scmd - k8s命令精简版
 ## 概述
 k8s命令很多，难记又难打，非常艰难；
-我直接用python做了一个简化版的命令，易记又易打，非常简单。
+我直接用python做了一个简化版的命令，易记又易打，非常简单；同时对资源相关的命令，会自动填充资源的命名空间，不用用户手动写。
 
 - 目前仅支持linux环境，windows环境未测试
 
@@ -112,10 +112,17 @@ k8ssts 资源名 -d
 # 查看所有Deployment资源列表
 k8sdeploy
 k8sdeploy -o yaml
-# 查看单个Deployment资源详情
+# 查看单个Deployment资源详情，等价于 kubectl describe deployment 资源名 + kubectl rollout status deployment 资源名
 k8sdeploy 资源名
 # 删除单个Deployment资源
 k8sdeploy 资源名 -d
+
+# 暂停 Deployment 的部署操作，等价于 kubectl rollout pause deploy 资源名
+k8sdeploy 资源名 stop
+# 恢复 Deployment 的部署操作，等价于 kubectl rollout resume deploy 资源名
+k8sdeploy 资源名 start
+# 重启 Deployment 的部署操作，即重启pod，等价于 kubectl rollout restart deploy 资源名
+k8sdeploy 资源名 restart
 ```
 
 11. k8sconfig: 查看或删除 ConfigMap
@@ -271,12 +278,28 @@ k8sapply a.yml b.yml
 k8sdelete a.yml b.yml
 ```
 
-28. k8sshowlabel: 切换是否显示标签，会改写配置文件`~/.kube/k8scmd.yml`, 用于控制全局各个资源列表的显示
+28. k8shistory: 查看 Deployment 历史记录
+```sh
+# 查看所有历史版本
+k8shistory Deployment资源名
+# 查看单个版本详情
+k8shistory Deployment资源名 版本号
+```
+
+29. k8srollback: 查看 Deployment 历史记录
+```sh
+# 回滚到上一个版本
+k8srollback Deployment资源名
+# 回滚到指定版本
+k8srollback Deployment资源名 版本号
+```
+
+30. k8sshowlabel: 切换是否显示标签，会改写配置文件`~/.kube/k8scmd.yml`, 用于控制全局各个资源列表的显示
 ```sh
 k8sshowlabel
 ```
 
-29. k8soutput: 指定输出格式，会改写配置文件`~/.kube/k8scmd.yml`, 用于控制全局各个资源列表的显示
+31. k8soutput: 指定输出格式，会改写配置文件`~/.kube/k8scmd.yml`, 用于控制全局各个资源列表的显示
 ```sh
 k8sdelete a.yml b.yml
 ```
