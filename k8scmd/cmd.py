@@ -100,6 +100,9 @@ def k8sdeploy():
         cmd = f'kubectl rollout status deploy {name}'
         run_cmd(cmd)
 
+def k8shpa():
+    run_res_cmd('hpa')
+
 def k8sconfig():
     run_res_cmd('cm')
 
