@@ -90,7 +90,13 @@ def get_res_name(res, required = True):
     if name.startswith('-'): # get命令，如 -o yaml，是拿不到资源名的
         return None
     if res != 'no' and res != 'ns' and res != 'cs': # 一般资源需带命名空间
+        if res == 'pod' and ':' in name: # podname:container
+            name, container = name.split(':', 1)
+        else:
+            container = None
         name = name + ' -n ' + get_ns(res, name)
+        if container:
+            name += ' -c ' + container
     return name
 
 # 找到某个资源的命名空间
