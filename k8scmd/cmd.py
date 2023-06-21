@@ -23,6 +23,10 @@ def k8scluster():
         print("\n--------------------------------\n")
     run_cmd(cmd)
 
+# 查看所有资源
+def k8sall():
+    run_cmd('kubectl get all -A')
+
 def k8sns():
     run_res_cmd('ns')
 
@@ -157,6 +161,9 @@ def k8sapply():
 
 def k8sdelete():
     run_cmd("kubectl delete -f $1_")
+
+def k8sdiff():
+    run_cmd("kubectl diff -f $1_")
 
 def k8sscale():
     # deploy资源名
