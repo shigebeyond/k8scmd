@@ -46,8 +46,8 @@ def get_res_cmd(res):
     if deleting:
         return f'kubectl delete {res} {name} $2_'
 
-    # 2 有资源名: describe 详情
-    if name is not None:
+    # 2 有资源名或babel(以-l开头): describe 详情
+    if name is not None and not name.startswith('-l '):
         if '-o' in sys.argv: # 有指定输出就用get
             return f'kubectl get {res} {name} $2_'
         # 否则用 describe
@@ -69,8 +69,13 @@ def get_res_cmd(res):
     if config['get-labels']:
         option += ' --show-labels'
 
+    # 3.3 过滤标签
+    labels = ''
+    if name is not None and name.startswith('-l '):
+        labels = ' ' + name
+
     # 拼接命令
-    return f'kubectl get {res} {option} $1_'
+    return f'kubectl get {res}{labels} {option} $1_'
 
 # 从命令行参数选出并删掉 -d
 def has_delete_arg():
@@ -79,16 +84,24 @@ def has_delete_arg():
         sys.argv.remove('-d')
     return ret
 
-# 从命令行参数中资源名
+# 从命令行参数中资源名或label
 def get_res_name(res, required = True):
     if len(sys.argv) == 1:  # 无资源名参数
         if required:
             raise Exception('缺少资源名参数')
         return None
 
+    # 取第一个参数为资源名
     name = sys.argv[1]
-    if name.startswith('-'): # get命令，如 -o yaml，是拿不到资源名的
+    # get命令选项，如 -o yaml，是拿不到资源名的
+    if name.startswith('-'):
         return None
+
+    # label，其中 @ 是 app= 的缩写
+    if name.startswith('@'):
+        return f"-l app={name[1:]}"
+
+    # 纯资源名，要带命名空间
     if res != 'no' and res != 'ns' and res != 'cs': # 一般资源需带命名空间
         if res == 'pod' and ':' in name: # podname:container
             name, container = name.split(':', 1)

@@ -34,6 +34,9 @@ k8sns 资源名
 k8sns 资源名 -o yaml
 # 删除单个Namespace资源
 k8sns 资源名 -d
+# 过滤指定标签的Namespace资源列表，以下2个命令等价
+k8sns @nginx
+k8sns -l app=nginx
 ```
 
 4. k8sno: 查看或删除 Node
@@ -46,6 +49,9 @@ k8sno 资源名
 k8sno 资源名 -o yaml
 # 删除单个Node资源
 k8sno 资源名 -d
+# 过滤指定标签的Node资源列表，以下2个命令等价
+k8sno @nginx
+k8sno -l app=nginx
 ```
 
 5. k8spod: 查看或删除 Pod
@@ -58,6 +64,9 @@ k8spod 资源名
 k8spod 资源名 -o yaml
 # 删除单个Pod资源
 k8spod 资源名 -d
+# 过滤指定标签的Pod资源列表，以下2个命令等价
+k8spod @nginx
+k8spod -l app=nginx
 ```
 
 6. k8ssvc: 查看或删除 Service
@@ -71,6 +80,9 @@ k8ssvc 资源名
 k8ssvc 资源名 -o yaml
 # 删除单个Service资源
 k8ssvc 资源名 -d
+# 过滤指定标签的Service资源列表，以下2个命令等价
+k8ssvc @nginx
+k8ssvc -l app=nginx
 ```
 
 7. k8src: 查看或删除 ReplicationController
@@ -83,6 +95,9 @@ k8src 资源名
 k8src 资源名 -o yaml
 # 删除单个ReplicationController资源
 k8src 资源名 -d
+# 过滤指定标签的ReplicationController资源列表，以下2个命令等价
+k8src @nginx
+k8src -l app=nginx
 ```
 
 8. k8srs: 查看或删除 ReplicaSet
@@ -95,6 +110,9 @@ k8srs 资源名
 k8srs 资源名 -o yaml
 # 删除单个ReplicaSet资源
 k8srs 资源名 -d
+# 过滤指定标签的ReplicaSet资源列表，以下2个命令等价
+k8srs @nginx
+k8srs -l app=nginx
 ```
 
 9. k8sds: 查看或删除 DaemonSet
@@ -107,6 +125,9 @@ k8sds 资源名
 k8sds 资源名 -o yaml
 # 删除单个DaemonSet资源
 k8sds 资源名 -d
+# 过滤指定标签的DaemonSet资源列表，以下2个命令等价
+k8sds @nginx
+k8sds -l app=nginx
 ```
 
 10. k8ssts: 查看或删除 StatefulSet
@@ -119,6 +140,9 @@ k8ssts 资源名
 k8ssts 资源名 -o yaml
 # 删除单个StatefulSet资源
 k8ssts 资源名 -d
+# 过滤指定标签的StatefulSet资源列表，以下2个命令等价
+k8ssts @nginx
+k8ssts -l app=nginx
 ```
 
 11. k8sdeploy: 查看或删除 Deployment
@@ -131,6 +155,9 @@ k8sdeploy 资源名
 k8sdeploy 资源名 -o yaml
 # 删除单个Deployment资源
 k8sdeploy 资源名 -d
+# 过滤指定标签的Deployment资源列表，以下2个命令等价
+k8sdeploy @nginx
+k8sdeploy -l app=nginx
 
 # 暂停 Deployment 的部署操作，等价于 kubectl rollout pause deploy 资源名
 k8sdeploy 资源名 stop
@@ -150,6 +177,9 @@ k8shpa 资源名
 k8shpa 资源名 -o yaml
 # 删除单个HorizontalPodAutoscaler资源
 k8shpa 资源名 -d
+# 过滤指定标签的HorizontalPodAutoscaler资源列表，以下2个命令等价
+k8shpa @nginx
+k8shpa -l app=nginx
 ```
 
 13. k8sconfig: 查看或删除 ConfigMap
@@ -162,6 +192,9 @@ k8sconfig 资源名
 k8sconfig 资源名 -o yaml
 # 删除单个ConfigMap资源
 k8sconfig 资源名 -d
+# 过滤指定标签的ConfigMap资源列表，以下2个命令等价
+k8sconfig @nginx
+k8sconfig -l app=nginx
 ```
 
 14. k8ssecret: 查看或删除 Secret
@@ -174,6 +207,9 @@ k8ssecret 资源名
 k8ssecret 资源名 -o yaml
 # 删除单个Secret资源
 k8ssecret 资源名 -d
+# 过滤指定标签的Secret资源列表，以下2个命令等价
+k8ssecret @nginx
+k8ssecret -l app=nginx
 ```
 
 15. k8sendpoint: 查看或删除 Endpoint
@@ -186,6 +222,9 @@ k8sendpoint 资源名
 k8sendpoint 资源名 -o yaml
 # 删除单个Endpoint资源
 k8sendpoint 资源名 -d
+# 过滤指定标签的Endpoint资源列表，以下2个命令等价
+k8sendpoint @nginx
+k8sendpoint -l app=nginx
 ```
 
 16. k8sevent: 查看或删除 Event
@@ -198,6 +237,9 @@ k8sevent 资源名
 k8sevent 资源名 -o yaml
 # 删除单个Event资源
 k8sevent 资源名 -d
+# 过滤指定标签的Event资源列表，以下2个命令等价
+k8sevent @nginx
+k8sevent -l app=nginx
 ```
 
 17. k8sjob: 查看或删除 Job
@@ -210,6 +252,9 @@ k8sjob 资源名
 k8sjob 资源名 -o yaml
 # 删除单个Job资源
 k8sjob 资源名 -d
+# 过滤指定标签的Job资源列表，以下2个命令等价
+k8sjob @nginx
+k8sjob -l app=nginx
 ```
 
 18. k8singress: 查看或删除 Ingress
@@ -222,6 +267,9 @@ k8singress 资源名
 k8singress 资源名 -o yaml
 # 删除单个Ingress资源
 k8singress 资源名 -d
+# 过滤指定标签的Ingress资源列表，以下2个命令等价
+k8singress @nginx
+k8singress -l app=nginx
 ```
 
 19. k8scronjob: 查看或删除 Cronjob
@@ -234,6 +282,9 @@ k8scronjob 资源名
 k8scronjob 资源名 -o yaml
 # 删除单个Cronjob资源
 k8scronjob 资源名 -d
+# 过滤指定标签的Cronjob资源列表，以下2个命令等价
+k8scronjob @nginx
+k8scronjob -l app=nginx
 ```
 
 20. k8spv: 查看或删除 PersistentVolume
@@ -246,6 +297,9 @@ k8spv 资源名
 k8spv 资源名 -o yaml
 # 删除单个PersistentVolume资源
 k8spv 资源名 -d
+# 过滤指定标签的PersistentVolume资源列表，以下2个命令等价
+k8spv @nginx
+k8spv -l app=nginx
 ```
 
 21. k8spvc: 查看或删除 PersistentVolumeClaim
@@ -258,6 +312,9 @@ k8spvc 资源名
 k8spvc 资源名 -o yaml
 # 删除单个PersistentVolumeClaim资源
 k8spvc 资源名 -d
+# 过滤指定标签的PersistentVolumeClaim资源列表，以下2个命令等价
+k8spvc @nginx
+k8spvc -l app=nginx
 ```
 
 22. k8ssc: 查看或删除 StorageClass
@@ -270,6 +327,9 @@ k8ssc 资源名
 k8ssc 资源名 -o yaml
 # 删除单个StorageClass资源
 k8ssc 资源名 -d
+# 过滤指定标签的StorageClass资源列表，以下2个命令等价
+k8ssc @nginx
+k8ssc -l app=nginx
 ```
 
 23. k8sexec: 在pod中执行命令
