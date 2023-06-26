@@ -236,6 +236,14 @@ def k8sgetns():
     write_config(config)
     print(f"Set get-ns={config['get-ns']}")
 
+def k8sapi():
+    if len(sys.argv) == 1: # 无资源类型
+        run_cmd(f"kubectl api-resources")
+        return
+
+    # 有资源类型
+    run_cmd(f"kubectl explain {sys.argv[1]} --recursive")
+
 # 测试
 if __name__ == '__main__':
     # k8sexec()

@@ -423,6 +423,17 @@ k8sgetns yaml
 k8sgetns
 ```
 
+37. k8sapi
+```
+# 查看所有api资源
+k8sapi
+# 查看资源或字段的文档
+k8sapi 资源或字段
+# 如 
+k8sapi pod
+k8sapi pods.spec.containers
+```
+
 ## 全局配置 
 配置文件`~/.kube/k8scmd.yml`, 用于控制全局各个资源列表(即kubectl get命令)的显示
 ```yaml

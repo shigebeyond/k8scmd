@@ -70,12 +70,14 @@ def get_res_cmd(res):
         option += ' --show-labels'
 
     # 3.3 过滤标签
-    labels = ''
+    labels = '' # 标签
+    other_args = '$1_' # 其他参数
     if name is not None and name.startswith('-l '):
         labels = ' ' + name
+        other_args = '$2_'
 
     # 拼接命令
-    return f'kubectl get {res}{labels} {option} $1_'
+    return f'kubectl get {res}{labels} {option} {other_args}'
 
 # 从命令行参数选出并删掉 -d
 def has_delete_arg():
