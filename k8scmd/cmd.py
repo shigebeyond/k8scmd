@@ -39,28 +39,50 @@ def k8spod():
 def k8ssvc():
     run_res_cmd('svc')
 
-def k8ssvc2():
+def k8ssvcurl():
     cmd = get_res_cmd('svc')
     # get转pandas，并构建http url列，方便用户复制url
     if ' get ' in cmd:
         cmd = replace_sysarg(cmd)
         print(cmd)
-        url_col = []
         df = run_command_return_dataframe(cmd)
+        # 拼接url
+        service_urls = [] # 服务url
+        endpoint_urls = [] # 终端的url
         for i, row in df.iterrows():
-            ip = row['CLUSTER-IP']
-            ports = re.findall(f'\d+(?=\/)', row['PORT(S)'])
-            urls = []
-            for port in ports:
-                port = int(port)
-                if port >= 30000:
-                    url = f"http://{ip}:{port}"
-                    urls.append(url)
-            url_col.append(','.join(urls))
-        df['url'] = url_col
+            service_urls.append(build_service_url(row))
+            endpoint_urls.append(build_endpoint_url(row))
+        df['SVC-URL'] = service_urls
+        df['ENDPOINT-URL'] = endpoint_urls
+        del df['CLUSTER-IP']
+        del df['EXTERNAL-IP']
+        del df['PORT(S)']
+        del df['AGE']
+        del df['SELECTOR']
         print(df)
         return
     run_cmd(cmd)
+
+# 构建服务url
+def build_service_url(row):
+    ip = row['CLUSTER-IP']
+    ports = re.findall(f'[\d:]+(?=\/)', row['PORT(S)'])
+    urls = []
+    for port in ports:
+        if ':' in port:  # ServicePort:NodePort
+            port, _ = port.split(':')
+        port = int(port)
+        if port != 443 and port != 53:
+            url = f"{ip}:{port}"
+            urls.append(url)
+    return ','.join(urls)
+
+# 构建终端url
+def build_endpoint_url(row):
+    cmd = f"kubectl describe svc {row['NAME']} -n {row['NAMESPACE']}"
+    output = run_command(cmd)
+    mat = re.search(f'Endpoints:\s*(.+)\n', output)
+    return mat.group(1)
 
 def k8src():
     run_res_cmd('rc')
@@ -122,8 +144,29 @@ def k8sevent():
 def k8sjob():
     run_res_cmd('jobs')
 
-def k8singress():
+def k8sing():
     run_res_cmd('ingresses')
+
+def k8singrule():
+    cmd = get_res_cmd('ing')
+    # get转pandas，逐个输出rule
+    if ' get ' in cmd:
+        cmd = replace_sysarg(cmd)
+        print(cmd)
+        df = run_command_return_dataframe(cmd)
+        for i, row in df.iterrows():
+            print('----------------------------')
+            print(f"{i+1}. {row['NAME']} -n {row['NAMESPACE']}")
+            print(build_ingress_rule(row))
+        return
+    run_cmd(cmd)
+
+# 构建ingress rule
+def build_ingress_rule(row):
+    cmd = f"kubectl describe ing {row['NAME']} -n {row['NAMESPACE']}"
+    output = run_command(cmd)
+    mat = re.search(f'Rules:\n(.+)\nAnnotations:', output, re.S)
+    return mat.group(1)
 
 def k8scronjob():
     run_res_cmd('cronjobs')
@@ -247,4 +290,5 @@ def k8sapi():
 # 测试
 if __name__ == '__main__':
     # k8sexec()
-    k8ssvc()
+    # k8ssvc()
+    k8singrule()

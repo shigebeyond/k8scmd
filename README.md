@@ -74,7 +74,7 @@ k8spod -l app=nginx
 # 查看所有Service资源列表
 k8ssvc
 k8ssvc -o yaml
-k8ssvc2 # 比 k8ssvc 多打印http url列，方便用户复制url，只针对30000以上的端口
+k8ssvcurl # 比 k8ssvc 多打印服务url+终端url列，方便用户复制url
 # 查看单个Service资源详情
 k8ssvc 资源名
 k8ssvc 资源名 -o yaml
@@ -257,19 +257,20 @@ k8sjob @nginx
 k8sjob -l app=nginx
 ```
 
-18. k8singress: 查看或删除 Ingress
+18. k8sing: 查看或删除 Ingress
 ```sh
 # 查看所有Ingress资源列表
-k8singress
-k8singress -o yaml
+k8sing
+k8sing -o yaml
+k8singrule # 逐个输出 Ingress 资源的规则
 # 查看单个Ingress资源详情
-k8singress 资源名
-k8singress 资源名 -o yaml
+k8sing 资源名
+k8sing 资源名 -o yaml
 # 删除单个Ingress资源
-k8singress 资源名 -d
+k8sing 资源名 -d
 # 过滤指定标签的Ingress资源列表，以下2个命令等价
-k8singress @nginx
-k8singress -l app=nginx
+k8sing @nginx
+k8sing -l app=nginx
 ```
 
 19. k8scronjob: 查看或删除 Cronjob
