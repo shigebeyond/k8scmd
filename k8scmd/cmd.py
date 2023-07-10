@@ -14,6 +14,10 @@ sudo systemctl restart kubelet
 kubectl get nodes'''
     run_cmd(cmd)
 
+def k8sstop():
+    cmd = 'sudo systemctl stop kubelet'
+    run_cmd(cmd)
+
 def k8scluster():
     # 集群状态
     # run_res_cmd('cs')

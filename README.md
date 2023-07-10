@@ -19,12 +19,17 @@ pip install k8scmd
 k8sstart
 ```
 
-2. k8sall: 查看所有资源
+2. k8sstop: 停止 kubelet 服务
+```
+k8sstop
+```
+
+3. k8sall: 查看所有资源
 ```sh
 k8sall
 ```
 
-3. k8sns: 查看或删除 Namespace
+4. k8sns: 查看或删除 Namespace
 ```sh
 # 查看所有Namespace资源列表
 k8sns
@@ -39,7 +44,7 @@ k8sns @nginx
 k8sns -l app=nginx
 ```
 
-4. k8sno: 查看或删除 Node
+5. k8sno: 查看或删除 Node
 ```sh
 # 查看所有Node资源列表
 k8sno
@@ -54,7 +59,7 @@ k8sno @nginx
 k8sno -l app=nginx
 ```
 
-5. k8spod: 查看或删除 Pod
+6. k8spod: 查看或删除 Pod
 ```sh
 # 查看所有Pod资源列表
 k8spod
@@ -69,12 +74,11 @@ k8spod @nginx
 k8spod -l app=nginx
 ```
 
-6. k8ssvc: 查看或删除 Service
+7. k8ssvc: 查看或删除 Service
 ```sh
 # 查看所有Service资源列表
 k8ssvc
 k8ssvc -o yaml
-k8ssvcurl # 比 k8ssvc 多打印服务url+终端url列，方便用户复制url
 # 查看单个Service资源详情
 k8ssvc 资源名
 k8ssvc 资源名 -o yaml
@@ -85,7 +89,12 @@ k8ssvc @nginx
 k8ssvc -l app=nginx
 ```
 
-7. k8src: 查看或删除 ReplicationController
+8. k8ssvcurl: 查看所有Service的服务url+终端url，方便用户复制url
+```sh
+k8ssvcurl 
+```
+
+9. k8src: 查看或删除 ReplicationController
 ```sh
 # 查看所有ReplicationController资源列表
 k8src
@@ -100,7 +109,7 @@ k8src @nginx
 k8src -l app=nginx
 ```
 
-8. k8srs: 查看或删除 ReplicaSet
+10. k8srs: 查看或删除 ReplicaSet
 ```sh
 # 查看所有ReplicaSet资源列表
 k8srs
@@ -115,7 +124,7 @@ k8srs @nginx
 k8srs -l app=nginx
 ```
 
-9. k8sds: 查看或删除 DaemonSet
+11. k8sds: 查看或删除 DaemonSet
 ```sh
 # 查看所有DaemonSet资源列表
 k8sds
@@ -130,7 +139,7 @@ k8sds @nginx
 k8sds -l app=nginx
 ```
 
-10. k8ssts: 查看或删除 StatefulSet
+12. k8ssts: 查看或删除 StatefulSet
 ```sh
 # 查看所有StatefulSet资源列表
 k8ssts
@@ -145,7 +154,7 @@ k8ssts @nginx
 k8ssts -l app=nginx
 ```
 
-11. k8sdeploy: 查看或删除 Deployment
+13. k8sdeploy: 查看或删除 Deployment
 ```sh
 # 查看所有Deployment资源列表
 k8sdeploy
@@ -167,7 +176,7 @@ k8sdeploy 资源名 start
 k8sdeploy 资源名 restart
 ```
 
-12. k8shpa: 查看或删除 HorizontalPodAutoscaler
+14. k8shpa: 查看或删除 HorizontalPodAutoscaler
 ```sh
 # 查看所有HorizontalPodAutoscaler资源列表
 k8shpa
@@ -182,7 +191,7 @@ k8shpa @nginx
 k8shpa -l app=nginx
 ```
 
-13. k8sconfig: 查看或删除 ConfigMap
+15. k8sconfig: 查看或删除 ConfigMap
 ```sh
 # 查看所有ConfigMap资源列表
 k8sconfig
@@ -197,7 +206,7 @@ k8sconfig @nginx
 k8sconfig -l app=nginx
 ```
 
-14. k8ssecret: 查看或删除 Secret
+16. k8ssecret: 查看或删除 Secret
 ```sh
 # 查看所有Secret资源列表
 k8ssecret
@@ -212,7 +221,7 @@ k8ssecret @nginx
 k8ssecret -l app=nginx
 ```
 
-15. k8sendpoint: 查看或删除 Endpoint
+17. k8sendpoint: 查看或删除 Endpoint
 ```sh
 # 查看所有Endpoint资源列表
 k8sendpoint
@@ -227,7 +236,7 @@ k8sendpoint @nginx
 k8sendpoint -l app=nginx
 ```
 
-16. k8sevent: 查看或删除 Event
+18. k8sevent: 查看或删除 Event
 ```sh
 # 查看所有Event资源列表
 k8sevent
@@ -242,7 +251,7 @@ k8sevent @nginx
 k8sevent -l app=nginx
 ```
 
-17. k8sjob: 查看或删除 Job
+19. k8sjob: 查看或删除 Job
 ```sh
 # 查看所有Job资源列表
 k8sjob
@@ -257,12 +266,11 @@ k8sjob @nginx
 k8sjob -l app=nginx
 ```
 
-18. k8sing: 查看或删除 Ingress
+20. k8sing: 查看或删除 Ingress
 ```sh
 # 查看所有Ingress资源列表
 k8sing
 k8sing -o yaml
-k8singrule # 逐个输出 Ingress 资源的规则
 # 查看单个Ingress资源详情
 k8sing 资源名
 k8sing 资源名 -o yaml
@@ -273,7 +281,12 @@ k8sing @nginx
 k8sing -l app=nginx
 ```
 
-19. k8scronjob: 查看或删除 Cronjob
+21. k8singrule 查看所有Ingress资源的规则
+```sh
+k8singrule
+```
+
+22. k8scronjob: 查看或删除 Cronjob
 ```sh
 # 查看所有Cronjob资源列表
 k8scronjob
@@ -288,7 +301,7 @@ k8scronjob @nginx
 k8scronjob -l app=nginx
 ```
 
-20. k8spv: 查看或删除 PersistentVolume
+23. k8spv: 查看或删除 PersistentVolume
 ```sh
 # 查看所有PersistentVolume资源列表
 k8spv
@@ -303,7 +316,7 @@ k8spv @nginx
 k8spv -l app=nginx
 ```
 
-21. k8spvc: 查看或删除 PersistentVolumeClaim
+24. k8spvc: 查看或删除 PersistentVolumeClaim
 ```sh
 # 查看所有PersistentVolumeClaim资源列表
 k8spvc
@@ -318,7 +331,7 @@ k8spvc @nginx
 k8spvc -l app=nginx
 ```
 
-22. k8ssc: 查看或删除 StorageClass
+25. k8ssc: 查看或删除 StorageClass
 ```sh
 # 查看所有StorageClass资源列表
 k8ssc
@@ -333,14 +346,14 @@ k8ssc @nginx
 k8ssc -l app=nginx
 ```
 
-23. k8sexec: 在pod中执行命令
+26. k8sexec: 在pod中执行命令
 ```sh
 k8sexec Pod资源名 命令
 # 例如
 k8sexec nginx ls -l
 ```
 
-24. k8sbash: 进入pod bash
+27. k8sbash: 进入pod bash
 ```sh
 k8sbash Pod资源名
 # 例如
@@ -348,7 +361,7 @@ k8sbash nginx
 ```
 
 
-25. k8slog: 查看pod日志
+28. k8slog: 查看pod日志
 ```sh
 k8slog Pod资源名 [-f]
 # 例如
@@ -356,38 +369,38 @@ k8slog nginx
 k8slog nginx -f
 ```
 
-26. k8sletlog: 查看kubelet服务日志
+29. k8sletlog: 查看kubelet服务日志
 ```sh
 k8sletlog
 k8sletlog -f
 ```
 
-27. k8screate: 简化`kubectl create -f`命令
+30. k8screate: 简化`kubectl create -f`命令
 ```sh
 k8screate a.yml b.yml
 ```
 
-28. k8sapply: 简化`kubectl apply -f`命令
+31. k8sapply: 简化`kubectl apply -f`命令
 ```sh
 k8sapply a.yml b.yml
 ```
 
-29. k8sdelete: 简化`kubectl delete -f`命令
+32. k8sdelete: 简化`kubectl delete -f`命令
 ```sh
 k8sdelete a.yml b.yml
 ```
 
-30. k8sdiff: 简化`kubectl diff -f`命令
+33. k8sdiff: 简化`kubectl diff -f`命令
 ```sh
 k8sdiff a.yml b.yml
 ```
 
-31. k8sscale: 扩容
+34. k8sscale: 扩容
 ```sh
 k8sscale Deployment资源名 副本数
 ```
 
-32. k8shistory: 查看 Deployment 历史记录
+35. k8shistory: 查看 Deployment 历史记录
 ```sh
 # 查看所有历史版本
 k8shistory Deployment资源名
@@ -395,7 +408,7 @@ k8shistory Deployment资源名
 k8shistory Deployment资源名 版本号
 ```
 
-33. k8srollback: 查看 Deployment 历史记录
+36. k8srollback: 查看 Deployment 历史记录
 ```sh
 # 回滚到上一个版本
 k8srollback Deployment资源名
@@ -403,12 +416,12 @@ k8srollback Deployment资源名
 k8srollback Deployment资源名 版本号
 ```
 
-34. k8sgetlabels: 切换是否显示标签，会改写配置文件`~/.kube/k8scmd.yml`, 用于控制全局各个资源列表(即kubectl get命令)的显示
+37. k8sgetlabels: 切换是否显示标签，会改写配置文件`~/.kube/k8scmd.yml`, 用于控制全局各个资源列表(即kubectl get命令)的显示
 ```sh
 k8sgetlabels
 ```
 
-35. k8sgetoutput: 指定输出格式，会改写配置文件`~/.kube/k8scmd.yml`, 用于控制全局各个资源列表(即kubectl get命令)的显示
+38. k8sgetoutput: 指定输出格式，会改写配置文件`~/.kube/k8scmd.yml`, 用于控制全局各个资源列表(即kubectl get命令)的显示
 ```sh
 # 指定输出格式
 k8sgetoutput yaml
@@ -416,7 +429,7 @@ k8sgetoutput yaml
 k8sgetoutput
 ```
 
-36. k8sgetns: 指定过滤的命名空间，会改写配置文件`~/.kube/k8scmd.yml`, 用于控制全局各个资源列表(即kubectl get命令)的显示
+39. k8sgetns: 指定过滤的命名空间，会改写配置文件`~/.kube/k8scmd.yml`, 用于控制全局各个资源列表(即kubectl get命令)的显示
 ```sh
 # 指定过滤的命名空间
 k8sgetns yaml
@@ -424,7 +437,7 @@ k8sgetns yaml
 k8sgetns
 ```
 
-37. k8sapi
+40. k8sapi
 ```
 # 查看所有api资源
 k8sapi
