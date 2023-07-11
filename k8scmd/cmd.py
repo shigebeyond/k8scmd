@@ -43,6 +43,7 @@ def k8spod():
 def k8ssvc():
     run_res_cmd('svc')
 
+# 输出每个服务的服务url+终端url
 def k8ssvcurl():
     cmd = get_res_cmd('svc')
     # get转pandas，并构建http url列，方便用户复制url
@@ -83,10 +84,31 @@ def build_service_url(row):
 
 # 构建终端url
 def build_endpoint_url(row):
-    cmd = f"kubectl describe svc {row['NAME']} -n {row['NAMESPACE']}"
+    cmd = f"kubectl describe svc {row['NAME']} -n {get_row_ns(row)}"
     output = run_command(cmd)
     mat = re.search(f'Endpoints:\s*(.+)\n', output)
     return mat.group(1)
+
+# 获得指定行中的命名空间，如果行中没有，则取配置的默认命名空间
+def get_row_ns(row):
+    if 'NAMESPACE' in row:
+        return row['NAMESPACE']
+    # 取配置的默认命名空间
+    return read_config()['get-ns']
+
+# 对指定服务url执行curl命令
+def k8ssvccurl():
+    name = get_res_name('svc')
+    res = run_command_return_yaml(f"kubectl get svc {name} -o yaml")
+    ip = res['spec']['clusterIP']
+    # 遍历每个端口来执行curl
+    for p in res['spec']['ports']:
+        port = p['port']
+        if port != 443 and port != 53:
+            curl = f"curl {ip}:{port}"
+            print(f"执行命令: {curl}, 结果如下")
+            os.system(curl)
+            print()
 
 def k8src():
     run_res_cmd('rc')
@@ -160,14 +182,14 @@ def k8singrule():
         df = run_command_return_dataframe(cmd)
         for i, row in df.iterrows():
             print('----------------------------')
-            print(f"{i+1}. {row['NAME']} -n {row['NAMESPACE']}")
+            print(f"{i+1}. {row['NAME']} -n {get_row_ns(row)}")
             print(build_ingress_rule(row))
         return
     run_cmd(cmd)
 
 # 构建ingress rule
 def build_ingress_rule(row):
-    cmd = f"kubectl describe ing {row['NAME']} -n {row['NAMESPACE']}"
+    cmd = f"kubectl describe ing {row['NAME']} -n {get_row_ns(row)}"
     output = run_command(cmd)
     mat = re.search(f'Rules:\n(.+)\nAnnotations:', output, re.S)
     return mat.group(1)

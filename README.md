@@ -19,17 +19,17 @@ pip install k8scmd
 k8sstart
 ```
 
-2. k8sstop: 停止 kubelet 服务
+1. k8sstop: 停止 kubelet 服务
 ```
 k8sstop
 ```
 
-3. k8sall: 查看所有资源
+2. k8sall: 查看所有资源
 ```sh
 k8sall
 ```
 
-4. k8sns: 查看或删除 Namespace
+3. k8sns: 查看或删除 Namespace
 ```sh
 # 查看所有Namespace资源列表
 k8sns
@@ -44,7 +44,7 @@ k8sns @nginx
 k8sns -l app=nginx
 ```
 
-5. k8sno: 查看或删除 Node
+4. k8sno: 查看或删除 Node
 ```sh
 # 查看所有Node资源列表
 k8sno
@@ -59,7 +59,7 @@ k8sno @nginx
 k8sno -l app=nginx
 ```
 
-6. k8spod: 查看或删除 Pod
+5. k8spod: 查看或删除 Pod
 ```sh
 # 查看所有Pod资源列表
 k8spod
@@ -74,7 +74,7 @@ k8spod @nginx
 k8spod -l app=nginx
 ```
 
-7. k8ssvc: 查看或删除 Service
+6. k8ssvc: 查看或删除 Service
 ```sh
 # 查看所有Service资源列表
 k8ssvc
@@ -89,10 +89,17 @@ k8ssvc @nginx
 k8ssvc -l app=nginx
 ```
 
-8. k8ssvcurl: 查看所有Service的服务url+终端url，方便用户复制url
+7. k8ssvcurl: 查看所有Service的服务url+终端url，方便用户复制url
 ```sh
 k8ssvcurl 
 ```
+![](img/k8ssvcurl.png)
+
+8. k8ssvccurl: 对指定服务的服务url执行curl命令
+```sh
+k8ssvccurl 服务名
+```
+![](img/k8ssvccurl.png)
 
 9. k8src: 查看或删除 ReplicationController
 ```sh
@@ -281,10 +288,11 @@ k8sing @nginx
 k8sing -l app=nginx
 ```
 
-21. k8singrule 查看所有Ingress资源的规则
+21. k8singrule: 查看所有Ingress资源的规则
 ```sh
 k8singrule
 ```
+![](img/k8singrule.png)
 
 22. k8scronjob: 查看或删除 Cronjob
 ```sh
