@@ -106,6 +106,7 @@ def k8ssvccurl():
         port = p['port']
         if port != 443 and port != 53:
             curl = f"curl {ip}:{port}"
+            # run_cmd(curl)
             print(f"执行命令: {curl}, 结果如下")
             os.system(curl)
             print()
