@@ -40,36 +40,39 @@ def run_res_cmd(res):
 
 # 生成k8s资源的get/describe/delete命令
 def get_res_cmd(res):
-    deleting = has_delete_arg()
     name = get_res_name(res, False)
     # 1 delete
-    if deleting:
+    if has_delete_arg():
         return f'kubectl delete {res} {name} $2_'
 
-    # 2 有资源名或babel(以-l开头): describe 详情
+    # 2 edit
+    if has_edit_arg():
+        return f'kubectl edit {res} {name} $2_'
+
+    # 3 有资源名或babel(以-l开头): describe 详情
     if name is not None and not name.startswith('-l '):
         if '-o' in sys.argv: # 有指定输出就用get
             return f'kubectl get {res} {name} $2_'
         # 否则用 describe
         return f'kubectl describe {res} {name} $2_'
 
-    # 3 无资源名: get 列表
+    # 4 无资源名: get 列表
     # 根据配置构建显示选项
     config = read_config()
     # option = '-o wide --get-labels'
-    # 3.1 过滤命名空间
+    # 4.1 过滤命名空间
     if config['get-ns']:
         option = f"-n {config['get-ns']}"
     else:
         option = '-A'
-    # 3.2 输出格式
+    # 4.2 输出格式
     if '-o' not in sys.argv:
         option += f" -o {config['get-output']}"
-    # 3.3 显示标签
+    # 4.3 显示标签
     if config['get-labels']:
         option += ' --show-labels'
 
-    # 3.3 过滤标签
+    # 4.3 过滤标签
     labels = '' # 标签
     other_args = '$1_' # 其他参数
     if name is not None and name.startswith('-l '):
@@ -81,9 +84,17 @@ def get_res_cmd(res):
 
 # 从命令行参数选出并删掉 -d
 def has_delete_arg():
-    ret = '-d' in sys.argv
-    if ret: # 删除
-        sys.argv.remove('-d')
+    return has_and_remove_arg('-d')
+
+# 从命令行参数选出并删掉 -e
+def has_edit_arg():
+    return has_and_remove_arg('-e')
+
+# 从命令行参数选出并删掉指定参数
+def has_and_remove_arg(arg):
+    ret = arg in sys.argv
+    if ret:  # 删除
+        sys.argv.remove(arg)
     return ret
 
 # 从命令行参数中资源名或label
@@ -120,4 +131,16 @@ def get_ns(res, name):
     name2ns = dict(zip(df['NAME'], df['NAMESPACE']))
     if name in name2ns:
         return name2ns[name]
-    raise Exception(f'找不到资源[{name}]的命名空间')
+    raise Exception(f'找不到{res}资源[{name}]的命名空间')
+
+# ip对pod名的映射
+ip2pod = None
+# 根据ip找到pod名
+def get_pod_by_ip(ip):
+    global ip2pod
+    if ip2pod is None:
+        df = run_command_return_dataframe(f"kubectl get pod -A -o wide")
+        ip2pod = dict(zip(df['IP'], df['NAME']))
+    if ip in ip2pod:
+        return ip2pod[ip]
+    return None

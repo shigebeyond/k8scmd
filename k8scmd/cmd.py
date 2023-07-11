@@ -87,7 +87,19 @@ def build_endpoint_url(row):
     cmd = f"kubectl describe svc {row['NAME']} -n {get_row_ns(row)}"
     output = run_command(cmd)
     mat = re.search(f'Endpoints:\s*(.+)\n', output)
-    return mat.group(1)
+    ret = mat.group(1)
+    return ret
+    # return add_pod_by_ip(ret)
+
+# 对ip字符串添加pod名
+def add_pod_by_ip(endpoints):
+    def add_pod(mat):
+        ip = mat.group(1)
+        pod = get_pod_by_ip(ip)
+        if pod is None:
+            return ip
+        return pod + '-' + ip
+    return re.sub(r'(\d+.\d+.\d+.\d+):', add_pod, endpoints)  # 对ip字符串添加pod名
 
 # 获得指定行中的命名空间，如果行中没有，则取配置的默认命名空间
 def get_row_ns(row):
@@ -193,7 +205,9 @@ def build_ingress_rule(row):
     cmd = f"kubectl describe ing {row['NAME']} -n {get_row_ns(row)}"
     output = run_command(cmd)
     mat = re.search(f'Rules:\n(.+)\nAnnotations:', output, re.S)
-    return mat.group(1)
+    ret = mat.group(1)
+    return ret
+    # return add_pod_by_ip(ret)
 
 def k8scronjob():
     run_res_cmd('cronjobs')
