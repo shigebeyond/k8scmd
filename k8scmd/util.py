@@ -57,7 +57,20 @@ def get_res_cmd(res):
         return f'kubectl describe {res} {name} $2_'
 
     # 4 无资源名: get 列表
-    # 根据配置构建显示选项
+    option = build_show_option()
+
+    # 4.3 过滤标签
+    labels = '' # 标签
+    other_args = '$1_' # 其他参数
+    if name is not None and name.startswith('-l '):
+        labels = ' ' + name
+        other_args = '$2_'
+
+    # 拼接命令
+    return f'kubectl get {res}{labels} {option} {other_args}'
+
+# 根据配置构建显示选项
+def build_show_option():
     config = read_config()
     # option = '-o wide --get-labels'
     # 4.1 过滤命名空间
@@ -71,16 +84,8 @@ def get_res_cmd(res):
     # 4.3 显示标签
     if config['get-labels']:
         option += ' --show-labels'
+    return option
 
-    # 4.3 过滤标签
-    labels = '' # 标签
-    other_args = '$1_' # 其他参数
-    if name is not None and name.startswith('-l '):
-        labels = ' ' + name
-        other_args = '$2_'
-
-    # 拼接命令
-    return f'kubectl get {res}{labels} {option} {other_args}'
 
 # 从命令行参数选出并删掉 -d
 def has_delete_arg():
