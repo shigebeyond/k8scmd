@@ -98,8 +98,22 @@ def add_pod_by_ip(endpoints):
         pod = get_pod_by_ip(ip)
         if pod is None:
             return ip
-        return pod + '-' + ip
+        return f"({pod}){ip}"
     return re.sub(r'(\d+.\d+.\d+.\d+):', add_pod, endpoints)  # 对ip字符串添加pod名
+
+def collect_pod_by_ips(endpoints, has_port = True):
+    '''
+    对ip字符串收集pod名
+    :param endpoints: 终端列表，只能包含ip端口逗号，不能包含其他字符
+    :param has_port: 是否包含端口
+    :return:
+    '''
+    port_reg = ''
+    if has_port:
+        port_reg = ':\d+'
+    ips = re.findall(rf'(\d+.\d+.\d+.\d+){port_reg}', endpoints)
+    ips = set(ips) # 去重
+    return ','.join(list(map(get_pod_by_ip, ips)))
 
 # 获得指定行中的命名空间，如果行中没有，则取配置的默认命名空间
 def get_row_ns(row):
@@ -122,6 +136,38 @@ def k8ssvccurl():
             print(f"执行命令: {curl}, 结果如下")
             os.system(curl)
             print()
+
+# 输出每个服务的终端对应的pod
+def k8ssvcpod():
+    cmd = get_res_cmd('endpoints')
+    # get转pandas，并构建http url列，方便用户复制url
+    if ' get ' in cmd:
+        cmd = replace_sysarg(cmd)
+        print(cmd)
+        df = run_command_return_dataframe(cmd)
+        # 拼接url
+        # eps = list(map(add_pod_by_ip, df['ENDPOINTS'])) # 终端加pod -- 显示不全
+        # df['ENDPOINTS'] = eps
+        pods = []
+        for i, row in df.iterrows():
+            pods.append(collect_pod_by_ips(row['ENDPOINTS']))
+        df['POD'] = pods
+        del df['AGE']
+        print(df)
+        return
+    if ' describe ' in cmd:
+        cmd = replace_sysarg(cmd)
+        print(cmd)
+        o = run_command(cmd)
+        def add_pods(mat):
+            ips = mat.group(2)
+            pods = collect_pod_by_ips(ips, False)
+            pref = mat.group(1)
+            return f"{pref}{ips}\n{pref.replace('Addresses', 'Pods')}{pods}\n"
+        o = re.sub(r'( *Addresses: *)((\d+.\d+.\d+.\d+.?)+)\n', add_pods, o)  # 对ip字符串添加pod名
+        print(o)
+        return
+    run_cmd(cmd)
 
 def k8src():
     run_res_cmd('rc')
@@ -332,4 +378,5 @@ def k8sapi():
 if __name__ == '__main__':
     # k8sexec()
     # k8ssvc()
-    k8singrule()
+    # k8singrule()
+    k8ssvcpod()

@@ -139,7 +139,10 @@ ip2pod = None
 def get_pod_by_ip(ip):
     global ip2pod
     if ip2pod is None:
-        df = run_command_return_dataframe(f"kubectl get pod -A -o wide")
+        # 修正RESTARTS列中有`3 (97m ago)`，干掉括号
+        def fix_output(o):
+            return re.sub(r'\(.+\)', '', o)  # 干掉括号
+        df = run_command_return_dataframe(f"kubectl get pod -A -o wide", fix_output)
         ip2pod = dict(zip(df['IP'], df['NAME']))
     if ip in ip2pod:
         return ip2pod[ip]
