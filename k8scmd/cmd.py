@@ -29,7 +29,14 @@ def k8scluster():
 
 # 查看所有资源
 def k8sall():
-    run_cmd('kubectl get all -A')
+    # 根据配置构建显示选项
+    config = read_config()
+    # 过滤命名空间
+    if config['get-ns']:
+        option = f"-n {config['get-ns']}"
+    else:
+        option = '-A'
+    run_cmd(f'kubectl get all {option}')
 
 def k8sns():
     run_res_cmd('ns')
