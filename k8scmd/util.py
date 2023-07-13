@@ -102,6 +102,8 @@ def has_and_remove_arg(arg):
         sys.argv.remove(arg)
     return ret
 
+res_without_ns = ['no' , 'ns' , 'cs' , 'pv'] # 不带命名空间的资源
+
 # 从命令行参数中资源名或label
 def get_res_name(res, required = True):
     if len(sys.argv) == 1:  # 无资源名参数
@@ -120,7 +122,7 @@ def get_res_name(res, required = True):
         return f"-l app={name[1:]}"
 
     # 纯资源名，要带命名空间
-    if res != 'no' and res != 'ns' and res != 'cs': # 一般资源需带命名空间
+    if res not in res_without_ns: # 只对带命名空间的资源
         if res == 'pod' and ':' in name: # podname:container
             name, container = name.split(':', 1)
         else:
