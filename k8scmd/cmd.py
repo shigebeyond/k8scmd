@@ -177,40 +177,56 @@ def k8srs():
     run_res_cmd('rs')
 
 def k8sds():
-    run_res_cmd('ds')
+    run_res_and_rollout_cmd('ds')
 
 def k8ssts():
-    run_res_cmd('sts')
+    run_res_and_rollout_cmd('sts')
 
 def k8sdeploy():
-    # 1 暂停或恢复部署
-    if len(sys.argv) >= 3:
-        action = sys.argv[2]
-        if action == 'start': # 恢复部署
-            action = 'resume'
-        elif action == 'stop': # 暂停部署
-            action = 'pause'
-        elif action == 'restart': # 重启pod
-            action = 'restart'
-        else:
-            action = None
-        if action:
-            name = get_res_name('deploy')
-            cmd = f'kubectl rollout {action} deploy {name}'
-            run_cmd(cmd)
-            return
+    run_res_and_rollout_cmd('deploy')
+
+# 执行资源+rollout命令(暂停或恢复部署)，用在 deploy + ds + sts
+def run_res_and_rollout_cmd(res):
+    # 1 执行rollout命令: 暂停或恢复部署，应用在 deploy + ds + sts
+    action = get_rollout_action() # 获得rollout命令的动作
+    if action:
+        name = get_res_name(res)
+        cmd = f'kubectl rollout {action} {res} {name}'
+        run_cmd(cmd)
+        return
 
     # 2 查看部署：kubectl get/describe deploy
-    # run_res_cmd('deploy')
-    cmd = get_res_cmd('deploy')
+    # run_res_cmd(res)
+    cmd = get_res_cmd(res)
     run_cmd(cmd)
 
     # 3 查看部署状态： kubectl rollout status deploy
     if ' describe ' in cmd:
         print("\n--------------------------------\n")
-        name = get_res_name('deploy')
-        cmd = f'kubectl rollout status deploy {name}'
+        name = get_res_name(res)
+        cmd = f'kubectl rollout status {res} {name}'
         run_cmd(cmd)
+
+def get_rollout_action():
+    '''
+    获得rollout命令的动作
+        history: 显示上线历史
+        pause: 将所指定的资源标记为已暂停
+        restart: Restart a resource
+        resume: 恢复暂停的资源
+        status: 显示上线的状态
+        undo: 撤销上一次的上线
+    '''
+    action = None
+    if len(sys.argv) >= 3:
+        action = sys.argv[2]
+        if action == 'start':  # 恢复部署
+            action = 'resume'
+        elif action == 'stop':  # 暂停部署
+            action = 'pause'
+        # restart: 重启pod
+    return action
+
 
 def k8shpa():
     run_res_cmd('hpa')
@@ -276,6 +292,10 @@ def k8sexec():
 def k8sbash():
     name = get_res_name('pod')
     run_cmd(f'kubectl exec -it {name} -- bash')
+
+def k8ssh():
+    name = get_res_name('pod')
+    run_cmd(f'kubectl exec -it {name} -- sh')
 
 def k8slog():
     name = get_res_name('pod')

@@ -167,6 +167,13 @@ k8sds 资源名 -e
 # 过滤指定标签的DaemonSet资源列表，以下2个命令等价
 k8sds @nginx
 k8sds -l app=nginx
+
+# 暂停 DaemonSet 的部署操作，等价于 kubectl rollout pause ds 资源名
+k8sds 资源名 stop
+# 恢复 DaemonSet 的部署操作，等价于 kubectl rollout resume ds 资源名
+k8sds 资源名 start
+# 重启 DaemonSet 的部署操作，即重启pod，等价于 kubectl rollout restart ds 资源名
+k8sds 资源名 restart
 ```
 
 14. k8ssts: 查删改 StatefulSet
@@ -184,6 +191,13 @@ k8ssts 资源名 -e
 # 过滤指定标签的StatefulSet资源列表，以下2个命令等价
 k8ssts @nginx
 k8ssts -l app=nginx
+
+# 暂停 StatefulSet 的部署操作，等价于 kubectl rollout pause sts 资源名
+k8ssts 资源名 stop
+# 恢复 StatefulSet 的部署操作，等价于 kubectl rollout resume sts 资源名
+k8ssts 资源名 start
+# 重启 StatefulSet 的部署操作，即重启pod，等价于 kubectl rollout restart sts 资源名
+k8ssts 资源名 restart
 ```
 
 15. k8sdeploy: 查删改 Deployment
@@ -418,7 +432,14 @@ k8sbash Pod资源名
 k8sbash nginx
 ```
 
-30. k8slog: 查看pod日志
+30. k8ssh: 进入pod sh
+```sh
+k8ssh Pod资源名
+# 例如
+k8ssh nginx
+```
+
+31. k8slog: 查看pod日志
 ```sh
 k8slog Pod资源名 [-f]
 # 例如
@@ -426,38 +447,38 @@ k8slog nginx
 k8slog nginx -f
 ```
 
-31. k8sletlog: 查看kubelet服务日志
+32. k8sletlog: 查看kubelet服务日志
 ```sh
 k8sletlog
 k8sletlog -f
 ```
 
-32. k8screate: 简化`kubectl create -f`命令
+33. k8screate: 简化`kubectl create -f`命令
 ```sh
 k8screate a.yml b.yml
 ```
 
-33. k8sapply: 简化`kubectl apply -f`命令
+34. k8sapply: 简化`kubectl apply -f`命令
 ```sh
 k8sapply a.yml b.yml
 ```
 
-34. k8sdelete: 简化`kubectl delete -f`命令
+35. k8sdelete: 简化`kubectl delete -f`命令
 ```sh
 k8sdelete a.yml b.yml
 ```
 
-35. k8sdiff: 简化`kubectl diff -f`命令
+36. k8sdiff: 简化`kubectl diff -f`命令
 ```sh
 k8sdiff a.yml b.yml
 ```
 
-36. k8sscale: 扩容
+37. k8sscale: 扩容
 ```sh
 k8sscale Deployment资源名 副本数
 ```
 
-37. k8shistory: 查看 Deployment 历史记录
+38. k8shistory: 查看 Deployment 历史记录
 ```sh
 # 查看所有历史版本
 k8shistory Deployment资源名
@@ -465,7 +486,7 @@ k8shistory Deployment资源名
 k8shistory Deployment资源名 版本号
 ```
 
-38. k8srollback: 查看 Deployment 历史记录
+39. k8srollback: 查看 Deployment 历史记录
 ```sh
 # 回滚到上一个版本
 k8srollback Deployment资源名
@@ -473,12 +494,12 @@ k8srollback Deployment资源名
 k8srollback Deployment资源名 版本号
 ```
 
-39. k8sgetlabels: 切换是否显示标签，会改写配置文件`~/.kube/k8scmd.yml`, 用于控制全局各个资源列表(即kubectl get命令)的显示
+40. k8sgetlabels: 切换是否显示标签，会改写配置文件`~/.kube/k8scmd.yml`, 用于控制全局各个资源列表(即kubectl get命令)的显示
 ```sh
 k8sgetlabels
 ```
 
-40. k8sgetoutput: 指定输出格式，会改写配置文件`~/.kube/k8scmd.yml`, 用于控制全局各个资源列表(即kubectl get命令)的显示
+41. k8sgetoutput: 指定输出格式，会改写配置文件`~/.kube/k8scmd.yml`, 用于控制全局各个资源列表(即kubectl get命令)的显示
 ```sh
 # 指定输出格式
 k8sgetoutput yaml
@@ -486,7 +507,7 @@ k8sgetoutput yaml
 k8sgetoutput
 ```
 
-41. k8sgetns: 指定过滤的命名空间，会改写配置文件`~/.kube/k8scmd.yml`, 用于控制全局各个资源列表(即kubectl get命令)的显示
+42. k8sgetns: 指定过滤的命名空间，会改写配置文件`~/.kube/k8scmd.yml`, 用于控制全局各个资源列表(即kubectl get命令)的显示
 ```sh
 # 指定过滤的命名空间
 k8sgetns yaml
@@ -494,7 +515,7 @@ k8sgetns yaml
 k8sgetns
 ```
 
-42. k8sapi: 查看api资源文档
+43. k8sapi: 查看api资源文档
 ```
 # 查看所有api资源
 k8sapi
