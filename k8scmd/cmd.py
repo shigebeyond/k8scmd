@@ -207,6 +207,8 @@ def run_res_and_rollout_cmd(res):
         cmd = f'kubectl rollout status {res} {name}'
         run_cmd(cmd)
 
+rollout_actions = ['history', 'pause', 'restart', 'resume', 'status', 'undo']
+
 def get_rollout_action():
     '''
     获得rollout命令的动作
@@ -225,8 +227,9 @@ def get_rollout_action():
         elif action == 'stop':  # 暂停部署
             action = 'pause'
         # restart: 重启pod
-    return action
-
+    if action in rollout_actions:
+        return action
+    return None
 
 def k8shpa():
     run_res_cmd('hpa')
