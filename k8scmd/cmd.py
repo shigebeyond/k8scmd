@@ -294,11 +294,19 @@ def k8sexec():
 
 def k8sbash():
     name = get_res_name('pod')
-    run_cmd(f'kubectl exec -it {name} -- bash')
+    container = ''
+    if len(sys.argv) >= 3:  # 有容器名
+        container = '-c ' + sys.argv[2]
+    # 取第一个参数为资源名
+    name = sys.argv[1]
+    run_cmd(f'kubectl exec -it {name} {container} -- bash')
 
 def k8ssh():
     name = get_res_name('pod')
-    run_cmd(f'kubectl exec -it {name} -- sh')
+    container = ''
+    if len(sys.argv) >= 3:  # 有容器名
+        container = '-c ' + sys.argv[2]
+    run_cmd(f'kubectl exec -it {name} {container} -- sh')
 
 def k8slog():
     name = get_res_name('pod')
