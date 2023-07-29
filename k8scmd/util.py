@@ -127,7 +127,10 @@ def get_res_name(res, required = True):
             name, container = name.split(':', 1)
         else:
             container = None
-        name = name + ' -n ' + get_ns(res, name)
+        if '*' in name: # 模糊搜索资源名
+            name = search_name(res, name)
+        else: # 精确资源名, 找到命名空间
+            name = name + ' -n ' + get_ns(res, name)
         if container:
             name += ' -c ' + container
     return name
@@ -139,6 +142,15 @@ def get_ns(res, name):
     if name in name2ns:
         return name2ns[name]
     raise Exception(f'找不到{res}资源[{name}]的命名空间')
+
+# 模糊搜索某个资源
+def search_name(res, name):
+    reg = name.replace('*', '.*')
+    df = run_command_return_dataframe(f"kubectl get {res} -A -o wide")
+    for i, row in df.iterrows():
+        if re.match(reg, row['NAME']):
+            return row['NAME'] + ' -n ' + row['NAMESPACE']
+    raise Exception(f'模糊搜索不到{res}资源[{name}]')
 
 # ip对pod名的映射
 ip2pod = None

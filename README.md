@@ -428,7 +428,7 @@ k8sexec nginx ls -l
 29. k8sbash: 进入pod bash
 ```sh
 k8sbash Pod资源名
-k8sbash Pod资源名 容器名
+k8sbash Pod资源名:容器名
 # 例如
 k8sbash nginx
 ```
@@ -436,7 +436,7 @@ k8sbash nginx
 30. k8ssh: 进入pod sh
 ```sh
 k8ssh Pod资源名
-k8ssh Pod资源名 容器名
+k8ssh Pod资源名:容器名
 # 例如
 k8ssh nginx
 ```
