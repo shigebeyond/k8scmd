@@ -14,22 +14,22 @@ pip install k8scmd
 ```
 
 ## 使用
-1. k8sstart: 启动 kubelet 服务
+1. k8sstart/kstart: 启动 kubelet 服务
 ```
 k8sstart
 ```
 
-2. k8sstop: 停止 kubelet 服务
+2. k8sstop/kstop: 停止 kubelet 服务
 ```
 k8sstop
 ```
 
-3. k8sall: 查看所有资源
+3. k8sall/kall: 查看所有资源
 ```sh
 k8sall
 ```
 
-4. k8sno: 查删改 Node
+4. k8sno/kno: 查删改 Node
 ```sh
 # 查看所有Node资源列表
 k8sno
@@ -46,7 +46,7 @@ k8sno @nginx
 k8sno -l app=nginx
 ```
 
-5. k8sns: 查删改 Namespace
+5. k8sns/kns: 查删改 Namespace
 ```sh
 # 查看所有Namespace资源列表
 k8sns
@@ -63,7 +63,7 @@ k8sns @nginx
 k8sns -l app=nginx
 ```
 
-6. k8spod: 查删改 Pod
+6. k8spod/kpod: 查删改 Pod
 ```sh
 # 查看所有Pod资源列表
 k8spod
@@ -80,7 +80,7 @@ k8spod @nginx
 k8spod -l app=nginx
 ```
 
-7. k8ssvc: 查删改 Service
+7. k8ssvc/ksvc: 查删改 Service
 ```sh
 # 查看所有Service资源列表
 k8ssvc
@@ -97,19 +97,19 @@ k8ssvc @nginx
 k8ssvc -l app=nginx
 ```
 
-8. k8ssvcurl: 查看所有Service的服务url+终端url，方便用户复制url
+8. k8ssvcurl/ksvcurl: 查看所有Service的服务url+终端url，方便用户复制url
 ```sh
 k8ssvcurl 
 ```
 ![](img/k8ssvcurl.png)
 
-9. k8ssvccurl: 对指定Service的服务url执行curl命令
+9. k8ssvccurl/ksvccurl: 对指定Service的服务url执行curl命令
 ```sh
 k8ssvccurl 服务名
 ```
 ![](img/k8ssvccurl.png)
 
-10. k8ssvcpod: 查看Service的终端对应的pod
+10. k8ssvcpod/ksvcpod: 查看Service的终端对应的pod
 ```sh
 # 查看所有Service的终端对应的pod
 k8ssvcpod
@@ -118,7 +118,7 @@ k8ssvcpod 服务名
 ```
 ![](img/k8ssvcpod.png)
 
-11. k8src: 查删改 ReplicationController
+11. k8src/krc: 查删改 ReplicationController
 ```sh
 # 查看所有ReplicationController资源列表
 k8src
@@ -135,7 +135,7 @@ k8src @nginx
 k8src -l app=nginx
 ```
 
-12. k8srs: 查删改 ReplicaSet
+12. k8srs/krs: 查删改 ReplicaSet
 ```sh
 # 查看所有ReplicaSet资源列表
 k8srs
@@ -152,7 +152,7 @@ k8srs @nginx
 k8srs -l app=nginx
 ```
 
-13. k8sds: 查删改 DaemonSet
+13. k8sds/kds: 查删改 DaemonSet
 ```sh
 # 查看所有DaemonSet资源列表
 k8sds
@@ -176,7 +176,7 @@ k8sds 资源名 start
 k8sds 资源名 restart
 ```
 
-14. k8ssts: 查删改 StatefulSet
+14. k8ssts/ksts: 查删改 StatefulSet
 ```sh
 # 查看所有StatefulSet资源列表
 k8ssts
@@ -200,7 +200,7 @@ k8ssts 资源名 start
 k8ssts 资源名 restart
 ```
 
-15. k8sdeploy: 查删改 Deployment
+15. k8sdeploy/kdeploy: 查删改 Deployment
 ```sh
 # 查看所有Deployment资源列表
 k8sdeploy
@@ -224,7 +224,7 @@ k8sdeploy 资源名 start
 k8sdeploy 资源名 restart
 ```
 
-16. k8shpa: 查删改 HorizontalPodAutoscaler
+16. k8shpa/khpa: 查删改 HorizontalPodAutoscaler
 ```sh
 # 查看所有HorizontalPodAutoscaler资源列表
 k8shpa
@@ -241,7 +241,7 @@ k8shpa @nginx
 k8shpa -l app=nginx
 ```
 
-17. k8sconfig: 查删改 ConfigMap
+17. k8sconfig/kconfig: 查删改 ConfigMap
 ```sh
 # 查看所有ConfigMap资源列表
 k8sconfig
@@ -258,7 +258,7 @@ k8sconfig @nginx
 k8sconfig -l app=nginx
 ```
 
-18. k8ssecret: 查删改 Secret
+18. k8ssecret/ksecret: 查删改 Secret
 ```sh
 # 查看所有Secret资源列表
 k8ssecret
@@ -275,7 +275,7 @@ k8ssecret @nginx
 k8ssecret -l app=nginx
 ```
 
-19. k8sendpoint: 查删改 Endpoint
+19. k8sendpoint/kendpoint: 查删改 Endpoint
 ```sh
 # 查看所有Endpoint资源列表
 k8sendpoint
@@ -292,7 +292,7 @@ k8sendpoint @nginx
 k8sendpoint -l app=nginx
 ```
 
-20. k8sevent: 查删改 Event
+20. k8sevent/kevent: 查删改 Event
 ```sh
 # 查看所有Event资源列表
 k8sevent
@@ -309,7 +309,7 @@ k8sevent @nginx
 k8sevent -l app=nginx
 ```
 
-21. k8sjob: 查删改 Job
+21. k8sjob/kjob: 查删改 Job
 ```sh
 # 查看所有Job资源列表
 k8sjob
@@ -326,7 +326,7 @@ k8sjob @nginx
 k8sjob -l app=nginx
 ```
 
-22. k8scronjob: 查删改 Cronjob
+22. k8scronjob/kcronjob: 查删改 Cronjob
 ```sh
 # 查看所有Cronjob资源列表
 k8scronjob
@@ -343,7 +343,7 @@ k8scronjob @nginx
 k8scronjob -l app=nginx
 ```
 
-23. k8sing: 查删改 Ingress
+23. k8sing/king: 查删改 Ingress
 ```sh
 # 查看所有Ingress资源列表
 k8sing
@@ -360,14 +360,14 @@ k8sing @nginx
 k8sing -l app=nginx
 ```
 
-24. k8singrule: 查看所有Ingress资源的规则
+24. k8singrule/kingrule: 查看所有Ingress资源的规则
 ```sh
 k8singrule
 ```
 ![](img/k8singrule.png)
 
 
-25. k8spv: 查删改 PersistentVolume
+25. k8spv/kpv: 查删改 PersistentVolume
 ```sh
 # 查看所有PersistentVolume资源列表
 k8spv
@@ -384,7 +384,7 @@ k8spv @nginx
 k8spv -l app=nginx
 ```
 
-26. k8spvc: 查删改 PersistentVolumeClaim
+26. k8spvc/kpvc: 查删改 PersistentVolumeClaim
 ```sh
 # 查看所有PersistentVolumeClaim资源列表
 k8spvc
@@ -401,7 +401,7 @@ k8spvc @nginx
 k8spvc -l app=nginx
 ```
 
-27. k8ssc: 查删改 StorageClass
+27. k8ssc/ksc: 查删改 StorageClass
 ```sh
 # 查看所有StorageClass资源列表
 k8ssc
@@ -418,14 +418,14 @@ k8ssc @nginx
 k8ssc -l app=nginx
 ```
 
-28. k8sexec: 在pod中执行命令
+28. k8sexec/kexec: 在pod中执行命令
 ```sh
 k8sexec Pod资源名 命令
 # 例如
 k8sexec nginx ls -l
 ```
 
-29. k8sbash: 进入pod bash
+29. k8sbash/kbash: 进入pod bash
 ```sh
 k8sbash Pod资源名
 k8sbash Pod资源名:容器名
@@ -433,7 +433,7 @@ k8sbash Pod资源名:容器名
 k8sbash nginx
 ```
 
-30. k8ssh: 进入pod sh
+30. k8ssh/ksh: 进入pod sh
 ```sh
 k8ssh Pod资源名
 k8ssh Pod资源名:容器名
@@ -441,7 +441,7 @@ k8ssh Pod资源名:容器名
 k8ssh nginx
 ```
 
-31. k8slog: 查看pod日志
+31. k8slog/klog: 查看pod日志
 ```sh
 k8slog Pod资源名 [-f]
 # 例如
@@ -449,38 +449,38 @@ k8slog nginx
 k8slog nginx -f
 ```
 
-32. k8sletlog: 查看kubelet服务日志
+32. k8sletlog/kletlog: 查看kubelet服务日志
 ```sh
 k8sletlog
 k8sletlog -f
 ```
 
-33. k8screate: 简化`kubectl create -f`命令
+33. k8screate/kcreate: 简化`kubectl create -f`命令
 ```sh
 k8screate a.yml b.yml
 ```
 
-34. k8sapply: 简化`kubectl apply -f`命令
+34. k8sapply/kapply: 简化`kubectl apply -f`命令
 ```sh
 k8sapply a.yml b.yml
 ```
 
-35. k8sdelete: 简化`kubectl delete -f`命令
+35. k8sdelete/kdelete: 简化`kubectl delete -f`命令
 ```sh
 k8sdelete a.yml b.yml
 ```
 
-36. k8sdiff: 简化`kubectl diff -f`命令
+36. k8sdiff/kdiff: 简化`kubectl diff -f`命令
 ```sh
 k8sdiff a.yml b.yml
 ```
 
-37. k8sscale: 扩容
+37. k8sscale/kscale: 扩容
 ```sh
 k8sscale Deployment资源名 副本数
 ```
 
-38. k8shistory: 查看 Deployment 历史记录
+38. k8shistory/khistory: 查看 Deployment 历史记录
 ```sh
 # 查看所有历史版本
 k8shistory Deployment资源名
@@ -488,7 +488,7 @@ k8shistory Deployment资源名
 k8shistory Deployment资源名 版本号
 ```
 
-39. k8srollback: 查看 Deployment 历史记录
+39. k8srollback/krollback: 查看 Deployment 历史记录
 ```sh
 # 回滚到上一个版本
 k8srollback Deployment资源名
@@ -496,12 +496,12 @@ k8srollback Deployment资源名
 k8srollback Deployment资源名 版本号
 ```
 
-40. k8sgetlabels: 切换是否显示标签，会改写配置文件`~/.kube/k8scmd.yml`, 用于控制全局各个资源列表(即kubectl get命令)的显示
+40. k8sgetlabels/kgetlabels: 切换是否显示标签，会改写配置文件`~/.kube/k8scmd.yml`, 用于控制全局各个资源列表(即kubectl get命令)的显示
 ```sh
 k8sgetlabels
 ```
 
-41. k8sgetoutput: 指定输出格式，会改写配置文件`~/.kube/k8scmd.yml`, 用于控制全局各个资源列表(即kubectl get命令)的显示
+41. k8sgetoutput/kgetoutput: 指定输出格式，会改写配置文件`~/.kube/k8scmd.yml`, 用于控制全局各个资源列表(即kubectl get命令)的显示
 ```sh
 # 指定输出格式
 k8sgetoutput yaml
@@ -509,7 +509,7 @@ k8sgetoutput yaml
 k8sgetoutput
 ```
 
-42. k8sgetns: 指定过滤的命名空间，会改写配置文件`~/.kube/k8scmd.yml`, 用于控制全局各个资源列表(即kubectl get命令)的显示
+42. k8sgetns/kgetns: 指定过滤的命名空间，会改写配置文件`~/.kube/k8scmd.yml`, 用于控制全局各个资源列表(即kubectl get命令)的显示
 ```sh
 # 指定过滤的命名空间
 k8sgetns yaml
@@ -517,7 +517,7 @@ k8sgetns yaml
 k8sgetns
 ```
 
-43. k8sapi: 查看api资源文档
+43. k8sapi/kapi: 查看api资源文档
 ```
 # 查看所有api资源
 k8sapi

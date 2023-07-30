@@ -26,7 +26,14 @@ def build_entry_points():
        格式为['命令名 = 模块名:函数名']， 如 ['k8scmd=k8scmd.boot:main']
     '''
     funs = load_module_funs('k8scmd/cmd.py')
-    return [f'{name}=k8scmd.cmd:{name}' for name, fun in funs.items() if name.startswith('k8s')]
+    # return [f'{name}=k8scmd.cmd:{name}' for name, fun in funs.items() if name.startswith('k8s')]
+    ret = []
+    for name, fun in funs.items():
+        if name.startswith('k8s'): # k8s前缀
+            ret.append(f'{name}=k8scmd.cmd:{name}')
+            alias = name.replace('k8s', 'k') # 别名简写为k前缀
+            ret.append(f'{alias}=k8scmd.cmd:{name}')
+    return ret
 
 setup(
     name='k8scmd',

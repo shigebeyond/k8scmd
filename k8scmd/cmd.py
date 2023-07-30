@@ -302,7 +302,10 @@ def k8ssh():
 
 def k8slog():
     name = get_res_name('pod')
-    run_cmd(f"kubectl logs {name} --all-containers=true $2_")
+    all_container = ''
+    if not ('-c' in sys.argv or ' -c ' in name): # 不带具体容器名
+        all_container = '--all-containers=true' # 看所有容器的日志
+    run_cmd(f"kubectl logs {name} {all_container} $2_")
 
 def k8sletlog():
     run_cmd("sudo journalctl -u kubelet | tail -n 50")
