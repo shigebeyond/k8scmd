@@ -518,7 +518,7 @@ k8sgetns
 ```
 
 43. k8sapi/kapi: 查看api资源文档
-```
+```sh
 # 查看所有api资源
 k8sapi
 # 查看资源或字段的文档
@@ -526,6 +526,12 @@ k8sapi 资源或字段
 # 如 
 k8sapi pod
 k8sapi pods.spec.containers
+```
+
+44. k8sbuild/kbuild: 替代`docker build`命令，用于构建docker镜像，并将镜像导入containerd的k8s命名空间中
+```sh
+k8sbuild -t rpcserver .
+kbuild -t 192.168.0.182:5000/rpcserver:3.0.0 .
 ```
 
 ## 全局配置 

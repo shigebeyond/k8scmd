@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 # -*- coding: utf-8 -*-
-
+from pyutilb.strs import substr_after_last
 from k8scmd.util import *
 
 '''
@@ -401,11 +401,31 @@ def k8sapi():
     # 有资源类型
     run_cmd(f"kubectl explain {sys.argv[1]} --recursive")
 
+def k8sbuild():
+    '''docker build -t my-app .
+    docker save my-app -o my-app.tar
+    ctr -n k8s.io images import my-app.tar'''
+    # 打包的镜像名
+    img = file = ''
+    for i in range(0, len(sys.argv)):
+        if sys.argv[i] == '-t':
+            img = file = sys.argv[i+1]
+            if '/' in file: # 192.168.0.182:5000/rpcserver:3.0.0
+                file = substr_after_last(file, '/').replace(':', '-')
+    if not img:
+        raise Exception('没指定镜像名, 请参考docker build -h')
+    # 执行命令
+    cmd = f'''sudo docker build $1_
+    sudo docker save {img} -o {file}.tar
+    sudo ctr -n k8s.io images import {file}.tar'''
+    run_cmd(cmd)
+
 # 测试
 if __name__ == '__main__':
     # k8spod()
     # k8sexec()
-    k8sbash()
+    # k8sbash()
     # k8ssvc()
     # k8singrule()
     # k8ssvcpod()
+    k8sbuild()
