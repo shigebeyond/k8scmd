@@ -1,5 +1,6 @@
 #!/usr/bin/python3
 # -*- coding: utf-8 -*-
+import sys
 from pyutilb.strs import substr_after_last
 from k8scmd.util import *
 
@@ -310,17 +311,23 @@ def k8slog():
 def k8sletlog():
     run_cmd("sudo journalctl -u kubelet | tail -n 50")
 
-def k8screate():
-    run_cmd("kubectl create -f $1_")
+def build_apply_files():
+    # return sys.argv[1] # 可能有多个文件，如对参数 namenode*.yml，命令会拿到多个文件
+    files = sys.argv[1:]
+    return ' -f '.join(files)
 
 def k8sapply():
-    run_cmd("kubectl apply --record=true -f $1_")
+    #run_cmd("kubectl apply --record=true -f $1_")
+    run_cmd("kubectl apply --record=true -f " + build_apply_files())
+
+def k8screate():
+    run_cmd("kubectl create -f " + build_apply_files())
 
 def k8sdelete():
-    run_cmd("kubectl delete -f $1_")
+    run_cmd("kubectl delete -f " + build_apply_files())
 
 def k8sdiff():
-    run_cmd("kubectl diff -f $1_")
+    run_cmd("kubectl diff -f " + build_apply_files())
 
 def k8sscale():
     # deploy资源名
