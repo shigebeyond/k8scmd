@@ -147,10 +147,18 @@ def get_ns(res, name):
 def search_name(res, name):
     reg = name.replace('*', '.*')
     df = run_command_return_dataframe(f"kubectl get {res} -A -o wide")
+    # 如果是pod，则要对status排序，将Running状态提上去 => 优先取Running状态的pod
+    if res == 'pod':
+        df['sort'] = list(map(is_pod_running, df['STATUS']))
+        df = df.sort_values(by='sort', ascending=False)
+    # 匹配资源名
     for i, row in df.iterrows():
         if re.match(reg, row['NAME']):
             return row['NAME'] + ' -n ' + row['NAMESPACE']
     raise Exception(f'模糊搜索不到{res}资源[{name}]')
+
+def is_pod_running(status):
+    return int(status == 'Running')
 
 # ip对pod名的映射
 ip2pod = None
