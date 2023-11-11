@@ -4,11 +4,11 @@ import sys
 from pyutilb.strs import substr_after_last
 from k8scmd.util import *
 
+# --------------------------- k8s命令 ---------------------------
 '''
 k8s命令简写
 命名参考 k8s资源简写: https://zhuanlan.zhihu.com/p/369647740
 '''
-
 def k8sstart():
     cmd = '''sudo swapoff -a
 sudo systemctl restart kubelet
@@ -427,6 +427,41 @@ def k8sbuild():
     sudo ctr -n k8s.io images import {file}.tar'''
     run_cmd(cmd)
 
+# --------------------------- argo命令 ---------------------------
+def ag():
+    run_argo_cmd()
+
+def agsubmit():
+    run_cmd(f"argo submit $1_")
+
+def aglog():
+    name = get_argo_name()
+    run_cmd(f"argo logs {name} $2_")
+
+def agdel():
+    # 无流程名参数 -- 删除所有流程
+    if len(sys.argv) == 1:
+        r = input("Are you delete all workflow? (Y/N) ").lower()
+        if r == 'y' or r == 'yes':
+            run_cmd("argo delete -A")
+        return
+
+    # 删除单个流程
+    name = get_argo_name()
+    run_cmd(f"argo delete {name} $2_")
+
+def agretry():
+    name = get_argo_name()
+    run_cmd(f"argo retry {name} $2_")
+
+def agresume():
+    name = get_argo_name()
+    run_cmd(f"argo resume {name} $2_")
+
+def agsuspend():
+    name = get_argo_name()
+    run_cmd(f"argo suspend {name} $2_")
+
 # 测试
 if __name__ == '__main__':
     # k8spod()
@@ -435,4 +470,5 @@ if __name__ == '__main__':
     # k8ssvc()
     # k8singrule()
     # k8ssvcpod()
-    k8sbuild()
+    # k8sbuild()
+    ag()

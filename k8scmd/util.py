@@ -5,6 +5,7 @@ from pyutilb.cmd import *
 from pyutilb.file import *
 from pyutilb.util import replace_sysarg
 
+# --------------------------- k8s命令帮助方法 ---------------------------
 # 配置文件
 # config_file = '~/.kube/k8scmd.yml'
 config_file = os.environ['HOME'] + '/.kube/k8scmd.yml'
@@ -49,7 +50,7 @@ def get_res_cmd(res):
     if has_edit_arg():
         return f'kubectl edit {res} {name} $2_'
 
-    # 3 有资源名或babel(以-l开头): describe 详情
+    # 3 有资源名或label(以-l开头): describe 详情
     if name is not None and not name.startswith('-l '):
         if '-o' in sys.argv: # 有指定输出就用get
             return f'kubectl get {res} {name} $2_'
@@ -128,15 +129,15 @@ def get_res_name(res, required = True):
         else:
             container = None
         if '*' in name: # 模糊搜索资源名
-            name = search_name(res, name)
+            name = search_res_name(res, name)
         else: # 精确资源名, 找到命名空间
-            name = name + ' -n ' + get_ns(res, name)
+            name = name + ' -n ' + get_res_ns(res, name)
         if container:
             name += ' -c ' + container
     return name
 
 # 找到某个资源的命名空间
-def get_ns(res, name):
+def get_res_ns(res, name):
     df = run_command_return_dataframe(f"kubectl get {res} -A -o wide")
     name2ns = dict(zip(df['NAME'], df['NAMESPACE']))
     if name in name2ns:
@@ -144,7 +145,7 @@ def get_ns(res, name):
     raise Exception(f'找不到{res}资源[{name}]的命名空间')
 
 # 模糊搜索某个资源
-def search_name(res, name):
+def search_res_name(res, name):
     reg = name.replace('*', '.*')
     df = run_command_return_dataframe(f"kubectl get {res} -A -o wide")
     # 如果是pod，则要对status排序，将Running状态提上去 => 优先取Running状态的pod
@@ -174,3 +175,89 @@ def get_pod_by_ip(ip):
     if ip in ip2pod:
         return ip2pod[ip]
     return None
+
+# --------------------------- argo命令帮助方法 ---------------------------
+# 执行argo的list/get/describe/delete命令
+def run_argo_cmd():
+    cmd = get_argo_cmd()
+    run_cmd(cmd)
+
+# 生成argo的list/get/describe/delete命令
+def get_argo_cmd():
+    if len(sys.argv) == 1:  # 无流程名
+        return 'argo list -A'
+
+    #name = sys.argv[1]
+    name = get_argo_name(False)
+    if name is None:
+        return 'argo list -A $1_'
+    # 有label(以-l开头): list
+    if name.startswith('-l '):
+        return f'argo list -A {name} $2_'
+
+    # 1 delete
+    if has_delete_arg():
+        return f'argo delete {name} $2_'
+
+    # 2 有资源名: get 详情
+    return f'argo get {name} $2_'
+
+# 从命令行参数中流程名
+def get_argo_name(required = True):
+    if len(sys.argv) == 1:  # 无流程名参数
+        if required:
+            raise Exception('缺少流程名参数')
+        return None
+
+    # 取第一个参数为流程名
+    name = sys.argv[1]
+    # get命令选项，如 -o yaml，是拿不到流程名的
+    if name.startswith('-'):
+        return None
+
+    # label，其中 @ 是 app= 的缩写
+    if name.startswith('@') and name != '@latest':
+        return f"-l flow={name[1:]}"
+
+    if ':' in name: # flowname:container
+        name, container = name.split(':', 1)
+    else:
+        container = None
+    # 纯流程名，要带命名空间
+    if '*' in name: # 模糊搜索流程名
+        name = search_argo_name(name)
+    elif '@latest' != name: # 精确流程名, 找到命名空间
+        name = name + ' -n ' + get_argo_ns(name)
+    if container:
+        name += ' -c ' + container
+    return name
+
+# 模糊搜索某个流程
+def search_argo_name(name):
+    reg = name.replace('*', '.*')
+    df = run_command_return_dataframe("argo list -A")
+    # 匹配流程名
+    ret = []
+    for i, row in df.iterrows():
+        if re.match(reg, row['NAME']):
+            name = row['NAME'] + ' -n ' + row['NAMESPACE']
+            ret.append(name)
+    n = len(ret)
+    if n == 0:
+        raise Exception(f'模糊搜索不到流程[{name}]')
+    if n == 1:
+        return ret[0]
+    lines = [f"{i+1}. {v}" for i, v in enumerate(ret)]
+    i = input("找到多个流程: \n" + "\n".join(lines) + "\n请输入序号选择以上一个流程: ")
+    i = int(i) - 1
+    if i < 0 or i >= n:
+        raise Exception("无效流程序号")
+    return ret[i]
+
+# 找到某个流程的命名空间
+def get_argo_ns(name):
+    df = run_command_return_dataframe("argo list -A")
+    name2ns = dict(zip(df['NAME'], df['NAMESPACE']))
+    if name in name2ns:
+        return name2ns[name]
+    raise Exception(f'找不到流程[{name}]的命名空间')
