@@ -409,7 +409,9 @@ def k8sapi():
     run_cmd(f"kubectl explain {sys.argv[1]} --recursive")
 
 def k8sbuild():
-    '''docker build -t my-app .
+    '''
+    使用docker构建镜像，并导入到k8s中
+    docker build -t my-app .
     docker save my-app -o my-app.tar
     ctr -n k8s.io images import my-app.tar'''
     # 打包的镜像名
@@ -427,12 +429,35 @@ def k8sbuild():
     sudo ctr -n k8s.io images import {file}.tar'''
     run_cmd(cmd)
 
+def k8sexport():
+    '''
+    k8s导出镜像
+    ctr -n k8s.io images export mysql.tar docker.io/library/mysql:5.7-debian --platform linux/amd64
+    '''
+    img = file = sys.argv[1]
+    if '/' in file: # 192.168.0.182:5000/rpcserver:3.0.0
+        file = substr_after_last(file, '/').replace(':', '-')
+    cmd = f"sudo ctr -n k8s.io images export {file}.tar {img} --platform linux/amd64"
+    run_cmd(cmd)
+
+def k8simport():
+    '''
+    导入镜像
+    ctr -n k8s.io images import mysql.tar
+    '''
+    file = sys.argv[1]
+    cmd = f"sudo ctr -n k8s.io images import {file}"
+    run_cmd(cmd)
+
 # --------------------------- argo命令 ---------------------------
 def ag():
     run_argo_cmd()
 
 def agsubmit():
-    run_cmd(f"argo submit $1_")
+    w = ''
+    if '--watch' not in sys.argv:
+        w = '--watch'
+    run_cmd(f"argo submit $1_ {w}")
 
 def aglog():
     name = get_argo_name()
