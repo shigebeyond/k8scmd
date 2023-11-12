@@ -285,6 +285,15 @@ def k8spv():
 def k8spvc():
     run_res_cmd('pvc')
 
+def k8saccount():
+    run_res_cmd('serviceaccount')
+
+def k8srole():
+    run_res_cmd('role')
+
+def k8srolebinding():
+    run_res_cmd('rolebinding')
+
 # storageclasses
 def k8ssc():
     run_res_cmd('storageclasses')
@@ -463,17 +472,11 @@ def aglog():
     name = get_argo_name()
     run_cmd(f"argo logs {name} $2_")
 
-def agdel():
-    # 无流程名参数 -- 删除所有流程
-    if len(sys.argv) == 1:
-        r = input("Are you delete all workflow? (Y/N) ").lower()
-        if r == 'y' or r == 'yes':
-            run_cmd("argo delete -A")
-        return
-
-    # 删除单个流程
-    name = get_argo_name()
-    run_cmd(f"argo delete {name} $2_")
+# 删除所有流程
+def agclear():
+    r = input("Are you delete all workflow? (Y/N) ").lower()
+    if r == 'y' or r == 'yes':
+        run_cmd("argo delete -A")
 
 def agretry():
     name = get_argo_name()
