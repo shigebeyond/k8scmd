@@ -52,7 +52,7 @@ def k8ssvcurl():
     if ' get ' in cmd:
         cmd = replace_sysarg(cmd)
         print(cmd)
-        df = run_command_return_dataframe(cmd)
+        df = run_command_return_dataframe2(cmd)
         # 拼接url
         service_urls = [] # 服务url
         endpoint_urls = [] # 终端的url
@@ -146,7 +146,7 @@ def k8ssvcpod():
     if ' get ' in cmd:
         cmd = replace_sysarg(cmd)
         print(cmd)
-        df = run_command_return_dataframe(cmd)
+        df = run_command_return_dataframe2(cmd)
         # 拼接url
         # eps = list(map(add_pod_by_ip, df['ENDPOINTS'])) # 终端加pod -- 显示不全
         # df['ENDPOINTS'] = eps
@@ -259,7 +259,7 @@ def k8singrule():
     if ' get ' in cmd:
         cmd = replace_sysarg(cmd)
         print(cmd)
-        df = run_command_return_dataframe(cmd)
+        df = run_command_return_dataframe2(cmd)
         for i, row in df.iterrows():
             print('----------------------------')
             print(f"{i+1}. {row['NAME']} -n {get_row_ns(row)}")
@@ -292,6 +292,9 @@ def k8srole():
     run_res_cmd('role')
 
 def k8srolebinding():
+    run_res_cmd('rolebinding')
+
+def k8srolebind():
     run_res_cmd('rolebinding')
 
 # storageclasses

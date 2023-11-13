@@ -1,9 +1,25 @@
 #!/usr/bin/python3
 # -*- coding: utf-8 -*-
 import os
+import re
+
 from pyutilb.cmd import *
 from pyutilb.file import *
+from pyutilb.ts import age2seconds
 from pyutilb.util import replace_sysarg
+
+# 修正k8s命令输出
+def fix_k8s_cmd_output(cmd):
+    # get pod命令输出的RESTARTS(重启次数)列有括号，如1 (9h ago) => 去掉
+    def fix(output):
+        if ' get pod' in cmd:
+            return re.sub(r"\(.+\)", "", output)
+        return output
+    return fix
+
+# 同步执行命令，并将输出整理为df + 修正k8s命令输出
+def run_command_return_dataframe2(cmd):
+    return run_command_return_dataframe(cmd, fix_k8s_cmd_output(cmd))
 
 # --------------------------- k8s命令帮助方法 ---------------------------
 # 配置文件
@@ -109,7 +125,10 @@ res_without_ns = ['no' , 'ns' , 'cs' , 'pv'] # 不带命名空间的资源
 def get_res_name(res, required = True):
     if len(sys.argv) == 1:  # 无资源名参数
         if required:
-            raise Exception('缺少资源名参数')
+            name = get_latest_res_name(res)
+            if name is None:
+                raise Exception('缺少资源名参数')
+            return name
         return None
 
     # 取第一个参数为资源名
@@ -117,6 +136,10 @@ def get_res_name(res, required = True):
     # get命令选项，如 -o yaml，是拿不到资源名的
     if name.startswith('-'):
         return None
+
+    # 最新的资源
+    if name == '@latest':
+        return get_latest_res_name(res)
 
     # label，其中 @ 是 app= 的缩写
     if name.startswith('@'):
@@ -138,7 +161,7 @@ def get_res_name(res, required = True):
 
 # 找到某个资源的命名空间
 def get_res_ns(res, name):
-    df = run_command_return_dataframe(f"kubectl get {res} -A -o wide")
+    df = run_command_return_dataframe2(f"kubectl get {res} -A -o wide")
     name2ns = dict(zip(df['NAME'], df['NAMESPACE']))
     if name in name2ns:
         return name2ns[name]
@@ -147,7 +170,7 @@ def get_res_ns(res, name):
 # 模糊搜索某个资源
 def search_res_name(res, name):
     reg = name.replace('*', '.*')
-    df = run_command_return_dataframe(f"kubectl get {res} -A -o wide")
+    df = run_command_return_dataframe2(f"kubectl get {res} -A -o wide")
     # 如果是pod，则要对status排序，将Running状态提上去 => 优先取Running状态的pod
     if res == 'pod':
         df['sort'] = list(map(is_pod_running, df['STATUS']))
@@ -157,6 +180,17 @@ def search_res_name(res, name):
         if re.match(reg, row['NAME']):
             return row['NAME'] + ' -n ' + row['NAMESPACE']
     raise Exception(f'模糊搜索不到{res}资源[{name}]')
+
+# 找到最新的资源名: 按age升序第一个为最新
+def get_latest_res_name(res):
+    df = run_command_return_dataframe2(f"kubectl get {res} -A -o wide")
+    if len(df) == 0:
+        return None
+    # 对age排序
+    df['sort'] = list(map(age2seconds, df['AGE']))
+    df = df.sort_values(by='sort', ascending=True)
+    row = df.iloc[0]
+    return row['NAME'] + ' -n ' + row['NAMESPACE']
 
 def is_pod_running(status):
     return int(status == 'Running')
@@ -170,7 +204,7 @@ def get_pod_by_ip(ip):
         # 修正RESTARTS列中有`3 (97m ago)`，干掉括号
         def fix_output(o):
             return re.sub(r'\(.+\)', '', o)  # 干掉括号
-        df = run_command_return_dataframe(f"kubectl get pod -A -o wide", fix_output)
+        df = run_command_return_dataframe2(f"kubectl get pod -A -o wide", fix_output)
         ip2pod = dict(zip(df['IP'], df['NAME']))
     if ip in ip2pod:
         return ip2pod[ip]
@@ -204,9 +238,9 @@ def get_argo_cmd():
 
 # 从命令行参数中流程名
 def get_argo_name(required = True):
-    if len(sys.argv) == 1:  # 无流程名参数
+    if len(sys.argv) == 1:  # 无流程名参数, 默认给 @latest(最新的流程)
         if required:
-            raise Exception('缺少流程名参数')
+            return '@latest'
         return None
 
     # 取第一个参数为流程名
@@ -235,7 +269,7 @@ def get_argo_name(required = True):
 # 模糊搜索某个流程
 def search_argo_name(name):
     reg = name.replace('*', '.*')
-    df = run_command_return_dataframe("argo list -A")
+    df = run_command_return_dataframe2("argo list -A")
     # 匹配流程名
     ret = []
     for i, row in df.iterrows():
@@ -256,8 +290,11 @@ def search_argo_name(name):
 
 # 找到某个流程的命名空间
 def get_argo_ns(name):
-    df = run_command_return_dataframe("argo list -A")
+    df = run_command_return_dataframe2("argo list -A")
     name2ns = dict(zip(df['NAME'], df['NAMESPACE']))
     if name in name2ns:
         return name2ns[name]
     raise Exception(f'找不到流程[{name}]的命名空间')
+
+if __name__ == '__main__':
+    print(get_res_name("pod", required=True))
