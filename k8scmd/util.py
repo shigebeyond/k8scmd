@@ -146,17 +146,16 @@ def get_res_name(res, required = True):
         return f"-l app={name[1:]}"
 
     # 纯资源名，要带命名空间
-    if res not in res_without_ns: # 只对带命名空间的资源
-        if res == 'pod' and ':' in name: # podname:container
-            name, container = name.split(':', 1)
-        else:
-            container = None
-        if '*' in name: # 模糊搜索资源名
-            name = search_res_name(res, name)
-        else: # 精确资源名, 找到命名空间
-            name = name + ' -n ' + get_res_ns(res, name)
-        if container:
-            name += ' -c ' + container
+    if res == 'pod' and ':' in name: # podname:container
+        name, container = name.split(':', 1)
+    else:
+        container = None
+    if '*' in name: # 模糊搜索资源名
+        name = search_res_name(res, name)
+    elif res not in res_without_ns: # 精确资源名, 找到命名空间 -- 只对带命名空间的资源
+        name = name + ' -n ' + get_res_ns(res, name)
+    if container:
+        name += ' -c ' + container
     return name
 
 # 找到某个资源的命名空间
@@ -178,7 +177,9 @@ def search_res_name(res, name):
     # 匹配资源名
     for i, row in df.iterrows():
         if re.match(reg, row['NAME']):
-            return row['NAME'] + ' -n ' + row['NAMESPACE']
+            if res not in res_without_ns: # 只对带命名空间的资源
+                return row['NAME'] + ' -n ' + row['NAMESPACE']
+            return row['NAME']
     raise Exception(f'模糊搜索不到{res}资源[{name}]')
 
 # 找到最新的资源名: 按age升序第一个为最新
