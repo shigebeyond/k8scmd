@@ -73,7 +73,7 @@ def get_res_crud_cmd(res):
         return f'kubectl describe {res} {name} $2_'
 
     # 4 无资源名: get 列表
-    option = build_show_option()
+    option = build_list_option()
 
     # 4.3 过滤标签
     labels = '' # 标签
@@ -85,12 +85,12 @@ def get_res_crud_cmd(res):
     # 拼接命令
     return f'kubectl get {res}{labels} {option} {other_args}'
 
-# 根据配置构建显示选项
-def build_show_option():
+# 根据配置构建list显示选项
+def build_list_option():
     config = read_config()
     # option = '-o wide --get-labels'
     # 4.1 过滤命名空间
-    option = build_ns_option()
+    option = build_ns_option(True)
     # 4.2 输出格式
     if '-o' not in sys.argv:
         option += f" -o {config['get-output']}"
@@ -99,14 +99,17 @@ def build_show_option():
         option += ' --show-labels'
     return option
 
-# 根据配置构建命名空间选项
-def build_ns_option():
+def build_ns_option(is_list):
+    '''
+    根据配置构建命名空间选项
+    :param: is_list 是否是list命令
+    '''
     config = read_config()
     option = ''
     if '-n' not in sys.argv and '-A' not in sys.argv:
         if config['get-ns']:
             option = f"-n {config['get-ns']}"
-        else:
+        elif is_list:
             option = '-A'
     return option
 
@@ -235,12 +238,12 @@ def get_argo_crud_cmd(type):
     '''
     cmd_pref = get_argo_cmd_pref(type)
     # list选项
-    list_option = build_show_option()
+    list_option = build_list_option()
     if len(sys.argv) == 1:  # 无流程名
         return f'{cmd_pref} list {list_option}'
 
     #name = sys.argv[1]
-    name = get_argo_name(False)
+    name = get_argo_name(type, False)
     if name is None:
         return f'{cmd_pref} list {list_option} $1_'
 
@@ -272,10 +275,10 @@ def get_argo_cmd_pref(type):
     return cmd_pref
 
 # 从命令行参数中流程名
-def get_argo_name(required = True):
+def get_argo_name(type, required = True):
     if len(sys.argv) == 1:  # 无流程名参数, 默认给 @latest(最新的流程)
         if required:
-            return '@latest ' + build_ns_option()
+            return '@latest ' + build_ns_option(False)
         return None
 
     # 取第一个参数为流程名
@@ -294,17 +297,18 @@ def get_argo_name(required = True):
         container = None
     # 纯流程名，要带命名空间
     if '*' in name: # 模糊搜索流程名
-        name = search_argo_name(name)
+        name = search_argo_name(type, name)
     elif '@latest' != name: # 精确流程名, 找到命名空间
-        name = name + ' -n ' + get_argo_ns(name)
+        name = name + ' -n ' + get_argo_ns(type, name)
     if container:
         name += ' -c ' + container
     return name
 
 # 模糊搜索某个流程
-def search_argo_name(name):
+def search_argo_name(type, name):
+    cmd_pref = get_argo_cmd_pref(type)
     reg = name.replace('*', '.*')
-    df = run_command_return_dataframe2("argo list -A")
+    df = run_command_return_dataframe2(f"{cmd_pref} list -A")
     # 匹配流程名
     ret = []
     for i, row in df.iterrows():
@@ -324,8 +328,9 @@ def search_argo_name(name):
     return ret[i]
 
 # 找到某个流程的命名空间
-def get_argo_ns(name):
-    df = run_command_return_dataframe2("argo list -A")
+def get_argo_ns(type, name):
+    cmd_pref = get_argo_cmd_pref(type)
+    df = run_command_return_dataframe2(f"{cmd_pref} list -A")
     name2ns = dict(zip(df['NAME'], df['NAMESPACE']))
     if name in name2ns:
         return name2ns[name]

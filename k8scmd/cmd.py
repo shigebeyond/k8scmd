@@ -30,7 +30,7 @@ def k8scluster():
 
 # 查看所有资源
 def k8sall():
-    option = build_show_option()
+    option = build_list_option()
     run_cmd(f'kubectl get all {option}')
 
 def k8sns():
@@ -477,15 +477,15 @@ def k8simport():
 # ------------- 通用命令 -------------
 def argo_create(type):
     cmd_pref = get_argo_cmd_pref(type)
-    run_cmd(f"{cmd_pref} create {build_ns_option()} $1_")
+    run_cmd(f"{cmd_pref} create {build_ns_option(False)} $1_")
 
 def argo_resume(type):
-    name = get_argo_name()
+    name = get_argo_name(type)
     cmd_pref = get_argo_cmd_pref(type)
     run_cmd(f"{cmd_pref} resume {name} $2_")
 
 def argo_suspend(type):
-    name = get_argo_name()
+    name = get_argo_name(type)
     cmd_pref = get_argo_cmd_pref(type)
     run_cmd(f"{cmd_pref} suspend {name} $2_")
 
@@ -497,7 +497,7 @@ def wfsubmit():
     w = ''
     if '--watch' not in sys.argv:
         w = '--watch'
-    run_cmd(f"argo submit {build_ns_option()} $1_ {w}")
+    run_cmd(f"argo submit {build_ns_option(False)} $1_ {w}")
 
 # 删除所有流程
 def wfclear():
@@ -506,11 +506,11 @@ def wfclear():
         run_cmd("argo delete -A")
 
 def wflog():
-    name = get_argo_name()
+    name = get_argo_name('wf')
     run_cmd(f"argo logs {name} $2_")
 
 def wfretry():
-    name = get_argo_name()
+    name = get_argo_name('wf')
     run_cmd(f"argo retry {name} $2_")
 
 def wfresume():
@@ -555,4 +555,4 @@ if __name__ == '__main__':
     # k8singrule()
     # k8ssvcpod()
     # k8sbuild()
-    ag()
+    wft()
