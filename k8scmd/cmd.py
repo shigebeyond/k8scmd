@@ -22,7 +22,7 @@ def k8sstop():
 def k8scluster():
     # 集群状态
     # run_res_cmd('cs')
-    cmd = get_res_cmd('cs')
+    cmd = get_res_crud_cmd('cs')
     if ' get ' in cmd and ' -o wide' in cmd:
         run_cmd('kubectl cluster-info') # 先输出集群信息
         print("\n--------------------------------\n")
@@ -34,20 +34,20 @@ def k8sall():
     run_cmd(f'kubectl get all {option}')
 
 def k8sns():
-    run_res_cmd('ns')
+    run_res_crud_cmd('ns')
 
 def k8sno():
-    run_res_cmd('no')
+    run_res_crud_cmd('no')
 
 def k8spod():
-    run_res_cmd('pod')
+    run_res_crud_cmd('pod')
 
 def k8ssvc():
-    run_res_cmd('svc')
+    run_res_crud_cmd('svc')
 
 # 输出每个服务的服务url+终端url
 def k8ssvcurl():
-    cmd = get_res_cmd('svc')
+    cmd = get_res_crud_cmd('svc')
     # get转pandas，并构建http url列，方便用户复制url
     if ' get ' in cmd:
         cmd = replace_sysarg(cmd)
@@ -141,7 +141,7 @@ def k8ssvccurl():
 
 # 输出每个服务的终端对应的pod
 def k8ssvcpod():
-    cmd = get_res_cmd('endpoints')
+    cmd = get_res_crud_cmd('endpoints')
     # get转pandas，并构建http url列，方便用户复制url
     if ' get ' in cmd:
         cmd = replace_sysarg(cmd)
@@ -172,10 +172,10 @@ def k8ssvcpod():
     run_cmd(cmd)
 
 def k8src():
-    run_res_cmd('rc')
+    run_res_crud_cmd('rc')
 
 def k8srs():
-    run_res_cmd('rs')
+    run_res_crud_cmd('rs')
 
 def k8sds():
     run_res_and_rollout_cmd('ds')
@@ -198,7 +198,7 @@ def run_res_and_rollout_cmd(res):
 
     # 2 查看部署：kubectl get/describe deploy
     # run_res_cmd(res)
-    cmd = get_res_cmd(res)
+    cmd = get_res_crud_cmd(res)
     run_cmd(cmd)
 
     # 3 查看部署状态： kubectl rollout status deploy
@@ -233,28 +233,28 @@ def get_rollout_action():
     return None
 
 def k8shpa():
-    run_res_cmd('hpa')
+    run_res_crud_cmd('hpa')
 
 def k8sconfig():
-    run_res_cmd('cm')
+    run_res_crud_cmd('cm')
 
 def k8ssecret():
-    run_res_cmd('secret')
+    run_res_crud_cmd('secret')
 
 def k8sendpoint():
-    run_res_cmd('endpoints')
+    run_res_crud_cmd('endpoints')
 
 def k8sevent():
-    run_res_cmd('events')
+    run_res_crud_cmd('events')
 
 def k8sjob():
-    run_res_cmd('jobs')
+    run_res_crud_cmd('jobs')
 
 def k8sing():
-    run_res_cmd('ingresses')
+    run_res_crud_cmd('ingresses')
 
 def k8singrule():
-    cmd = get_res_cmd('ing')
+    cmd = get_res_crud_cmd('ing')
     # get转pandas，逐个输出rule
     if ' get ' in cmd:
         cmd = replace_sysarg(cmd)
@@ -276,30 +276,33 @@ def build_ingress_rule(row):
     return ret
     # return add_pod_by_ip(ret)
 
+def k8scron():
+    k8scronjob()
+
 def k8scronjob():
-    run_res_cmd('cronjobs')
+    run_res_crud_cmd('cronjobs')
 
 def k8spv():
-    run_res_cmd('pv')
+    run_res_crud_cmd('pv')
 
 def k8spvc():
-    run_res_cmd('pvc')
+    run_res_crud_cmd('pvc')
 
 def k8saccount():
-    run_res_cmd('serviceaccount')
+    run_res_crud_cmd('serviceaccount')
 
 def k8srole():
-    run_res_cmd('role')
+    run_res_crud_cmd('role')
 
 def k8srolebinding():
-    run_res_cmd('rolebinding')
+    run_res_crud_cmd('rolebinding')
 
 def k8srolebind():
-    run_res_cmd('rolebinding')
+    run_res_crud_cmd('rolebinding')
 
 # storageclasses
 def k8ssc():
-    run_res_cmd('storageclasses')
+    run_res_crud_cmd('storageclasses')
 
 def k8sexec():
     name = get_res_name('pod')
@@ -462,36 +465,66 @@ def k8simport():
     run_cmd(cmd)
 
 # --------------------------- argo命令 ---------------------------
-def ag():
-    run_argo_cmd()
+# ------------- 通用命令 -------------
+def argo_resume(type):
+    name = get_argo_name()
+    cmd_pref = get_argo_cmd_pref(type)
+    run_cmd(f"{cmd_pref} resume {name} $2_")
 
-def agsubmit():
+def argo_suspend(type):
+    name = get_argo_name()
+    cmd_pref = get_argo_cmd_pref(type)
+    run_cmd(f"{cmd_pref} suspend {name} $2_")
+
+# ------------- 流程相关命令 -------------
+def wf():
+    run_argo_crud_cmd('wf')
+
+def wfsubmit():
     w = ''
     if '--watch' not in sys.argv:
         w = '--watch'
-    run_cmd(f"argo submit $1_ {w}")
-
-def aglog():
-    name = get_argo_name()
-    run_cmd(f"argo logs {name} $2_")
+    run_cmd(f"argo submit {build_ns_option()} $1_ {w}")
 
 # 删除所有流程
-def agclear():
+def wfclear():
     r = input("Are you delete all workflow? (Y/N) ").lower()
     if r == 'y' or r == 'yes':
         run_cmd("argo delete -A")
 
-def agretry():
+def wflog():
+    name = get_argo_name()
+    run_cmd(f"argo logs {name} $2_")
+
+def wfretry():
     name = get_argo_name()
     run_cmd(f"argo retry {name} $2_")
 
-def agresume():
-    name = get_argo_name()
-    run_cmd(f"argo resume {name} $2_")
+def wfresume():
+    argo_resume('wf')
 
-def agsuspend():
-    name = get_argo_name()
-    run_cmd(f"argo suspend {name} $2_")
+def wfsuspend():
+    argo_suspend('wf')
+
+# ------------- 定时流程相关命令 -------------
+def cwf():
+    run_argo_crud_cmd('cwf')
+
+def cwfcreate():
+    run_cmd(f"argo create {build_ns_option()} $1_")
+
+def cwfresume():
+    argo_resume('cwf')
+
+def cwfsuspend():
+    argo_suspend('cwf')
+
+# ------------- 流程模板相关命令 -------------
+def wft():
+    run_argo_crud_cmd('wft')
+
+def wftcreate():
+    run_cmd(f"argo create {build_ns_option()} $1_")
 
 # 测试
 if __name__ == '__main__':

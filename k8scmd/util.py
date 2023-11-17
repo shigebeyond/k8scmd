@@ -2,7 +2,6 @@
 # -*- coding: utf-8 -*-
 import os
 import re
-
 from pyutilb.cmd import *
 from pyutilb.file import *
 from pyutilb.ts import age2seconds
@@ -29,7 +28,7 @@ config_file = os.environ['HOME'] + '/.kube/k8scmd.yml'
 default_config = {
     'get-output': 'wide', # 输出格式
     'get-labels': False, # 是否显示标签
-    'get-ns': '' # 命名空间，默认显示全部
+    'get-ns': '', # 命名空间，默认显示全部
 }
 
 # 读配置
@@ -50,13 +49,13 @@ def run_cmd(cmd):
     print(cmd)
     os.system(cmd)
 
-# 执行k8s资源的get/describe/delete命令
-def run_res_cmd(res):
-    cmd = get_res_cmd(res)
+# 执行k8s资源的get/describe/edit/delete增删改查命令
+def run_res_crud_cmd(res):
+    cmd = get_res_crud_cmd(res)
     run_cmd(cmd)
 
-# 生成k8s资源的get/describe/delete命令
-def get_res_cmd(res):
+# 生成k8s资源的get/describe/edit/delete增删改查命令
+def get_res_crud_cmd(res):
     name = get_res_name(res, False)
     # 1 delete
     if has_delete_arg():
@@ -91,16 +90,24 @@ def build_show_option():
     config = read_config()
     # option = '-o wide --get-labels'
     # 4.1 过滤命名空间
-    if config['get-ns']:
-        option = f"-n {config['get-ns']}"
-    else:
-        option = '-A'
+    option = build_ns_option()
     # 4.2 输出格式
     if '-o' not in sys.argv:
         option += f" -o {config['get-output']}"
     # 4.3 显示标签
     if config['get-labels']:
         option += ' --show-labels'
+    return option
+
+# 根据配置构建命名空间选项
+def build_ns_option():
+    config = read_config()
+    option = ''
+    if '-n' not in sys.argv:
+        if config['get-ns']:
+            option = f"-n {config['get-ns']}"
+        else:
+            option = '-A'
     return option
 
 
@@ -212,36 +219,62 @@ def get_pod_by_ip(ip):
     return None
 
 # --------------------------- argo命令帮助方法 ---------------------------
-# 执行argo的list/get/describe/delete命令
-def run_argo_cmd():
-    cmd = get_argo_cmd()
+def run_argo_crud_cmd(type):
+    '''
+    执行argo的get/describe/delete增删改查命令
+    :param type: 类型，如空或wf表示流程, cwf表示定时流程, wftmpl表示流程模板
+    :return:
+    '''
+    cmd = get_argo_crud_cmd(type)
     run_cmd(cmd)
 
-# 生成argo的list/get/describe/delete命令
-def get_argo_cmd():
+def get_argo_crud_cmd(type):
+    '''
+    生成argo的get/describe/delete增删改查命令
+    :param type: 类型，如空或wf表示流程, cwf表示定时流程, wftmpl表示流程模板
+    :return:
+    '''
+    cmd_pref = get_argo_cmd_pref(type)
+    # list选项
+    list_option = build_show_option()
     if len(sys.argv) == 1:  # 无流程名
-        return 'argo list -A'
+        return f'{cmd_pref} list {list_option}'
 
     #name = sys.argv[1]
     name = get_argo_name(False)
     if name is None:
-        return 'argo list -A $1_'
+        return f'{cmd_pref} list {list_option} $1_'
+
     # 有label(以-l开头): list
     if name.startswith('-l '):
-        return f'argo list -A {name} $2_'
+        return f'{cmd_pref} list -A {name} $2_'
 
     # 1 delete
     if has_delete_arg():
-        return f'argo delete {name} $2_'
+        return f'{cmd_pref} delete {name} $2_'
 
     # 2 有资源名: get 详情
-    return f'argo get {name} $2_'
+    return f'{cmd_pref} get {name} $2_'
+
+def get_argo_cmd_pref(type):
+    '''
+    获得argo命令前缀
+    :param type: 类型，如空或wf表示流程, cwf表示定时流程, wftmpl表示流程模板
+    :return:
+    '''
+    if type == 'cwf':
+        cmd_pref = 'argo cron'
+    elif type == 'wftmpl' or type == 'wft':
+        cmd_pref = 'argo template'
+    else:
+        cmd_pref = 'argo'
+    return cmd_pref
 
 # 从命令行参数中流程名
 def get_argo_name(required = True):
     if len(sys.argv) == 1:  # 无流程名参数, 默认给 @latest(最新的流程)
         if required:
-            return '@latest'
+            return '@latest ' + build_ns_option()
         return None
 
     # 取第一个参数为流程名

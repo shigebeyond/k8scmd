@@ -33,7 +33,7 @@ def build_entry_points():
             ret.append(f'{name}=k8scmd.cmd:{name}')
             alias = name.replace('k8s', 'k') # 别名简写为k前缀
             ret.append(f'{alias}=k8scmd.cmd:{name}')
-        if name.startswith('ag'): # ag前缀
+        if name.startswith('wf') or name.startswith('cwf'): # wf/wft/cwf前缀
             ret.append(f'{name}=k8scmd.cmd:{name}')
     return ret
 
