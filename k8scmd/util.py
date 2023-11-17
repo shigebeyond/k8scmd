@@ -103,13 +103,12 @@ def build_show_option():
 def build_ns_option():
     config = read_config()
     option = ''
-    if '-n' not in sys.argv:
+    if '-n' not in sys.argv and '-A' not in sys.argv:
         if config['get-ns']:
             option = f"-n {config['get-ns']}"
         else:
             option = '-A'
     return option
-
 
 # 从命令行参数选出并删掉 -d
 def has_delete_arg():
@@ -259,13 +258,15 @@ def get_argo_crud_cmd(type):
 def get_argo_cmd_pref(type):
     '''
     获得argo命令前缀
-    :param type: 类型，如空或wf表示流程, cwf表示定时流程, wftmpl表示流程模板
+    :param type: 类型，如空或wf表示流程, cwf表示定时流程, wftmpl/wft表示流程模板, cwft表示集群级流程模板
     :return:
     '''
     if type == 'cwf':
         cmd_pref = 'argo cron'
     elif type == 'wftmpl' or type == 'wft':
         cmd_pref = 'argo template'
+    elif type == 'cwft':
+        cmd_pref = 'argo cluster-template'
     else:
         cmd_pref = 'argo'
     return cmd_pref

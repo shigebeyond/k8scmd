@@ -45,6 +45,15 @@ def k8spod():
 def k8ssvc():
     run_res_crud_cmd('svc')
 
+def k8swft():
+    run_res_crud_cmd('wftmpl')
+
+def k8scwft():
+    run_res_crud_cmd('cwft')
+
+def k8scwf():
+    run_res_crud_cmd('cwf')
+
 # 输出每个服务的服务url+终端url
 def k8ssvcurl():
     cmd = get_res_crud_cmd('svc')
@@ -466,6 +475,10 @@ def k8simport():
 
 # --------------------------- argo命令 ---------------------------
 # ------------- 通用命令 -------------
+def argo_create(type):
+    cmd_pref = get_argo_cmd_pref(type)
+    run_cmd(f"{cmd_pref} create {build_ns_option()} $1_")
+
 def argo_resume(type):
     name = get_argo_name()
     cmd_pref = get_argo_cmd_pref(type)
@@ -511,7 +524,7 @@ def cwf():
     run_argo_crud_cmd('cwf')
 
 def cwfcreate():
-    run_cmd(f"argo create {build_ns_option()} $1_")
+    argo_create('cwf')
 
 def cwfresume():
     argo_resume('cwf')
@@ -524,7 +537,14 @@ def wft():
     run_argo_crud_cmd('wft')
 
 def wftcreate():
-    run_cmd(f"argo create {build_ns_option()} $1_")
+    argo_create('wft')
+
+# ------------- 集群级流程模板相关命令 -------------
+def cwft():
+    run_argo_crud_cmd('cwft')
+
+def cwftcreate():
+    argo_create('cwft')
 
 # 测试
 if __name__ == '__main__':
