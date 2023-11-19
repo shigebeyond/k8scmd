@@ -109,7 +109,7 @@ def build_ns_option(is_list):
     if '-n' not in sys.argv and '-A' not in sys.argv:
         if config['get-ns']:
             option = f"-n {config['get-ns']}"
-        elif is_list:
+        elif is_list and not sys.argv[0].endswith('cwft'):
             option = '-A'
     return option
 

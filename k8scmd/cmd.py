@@ -45,6 +45,9 @@ def k8spod():
 def k8ssvc():
     run_res_crud_cmd('svc')
 
+def k8swf():
+    run_res_crud_cmd('wf')
+
 def k8swft():
     run_res_crud_cmd('wftmpl')
 
@@ -53,6 +56,9 @@ def k8scwft():
 
 def k8scwf():
     run_res_crud_cmd('cwf')
+
+def k8swfevent():
+    run_res_crud_cmd('WorkflowEventBinding')
 
 # 输出每个服务的服务url+终端url
 def k8ssvcurl():
@@ -555,4 +561,4 @@ if __name__ == '__main__':
     # k8singrule()
     # k8ssvcpod()
     # k8sbuild()
-    wft()
+    cwft()
