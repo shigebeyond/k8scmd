@@ -223,7 +223,7 @@ def get_pod_by_ip(ip):
 # --------------------------- argo命令帮助方法 ---------------------------
 def run_argo_crud_cmd(type):
     '''
-    执行argo的get/describe/delete增删改查命令
+    执行argo的list/get/delete增删改查命令
     :param type: 类型，如空或wf表示流程, cwf表示定时流程, wftmpl表示流程模板
     :return:
     '''
@@ -232,7 +232,7 @@ def run_argo_crud_cmd(type):
 
 def get_argo_crud_cmd(type):
     '''
-    生成argo的get/describe/delete增删改查命令
+    生成argo的list/get/delete增删改查命令
     :param type: 类型，如空或wf表示流程, cwf表示定时流程, wftmpl表示流程模板
     :return:
     '''

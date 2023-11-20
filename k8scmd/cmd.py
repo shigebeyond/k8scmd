@@ -309,11 +309,14 @@ def k8saccount():
 def k8srole():
     run_res_crud_cmd('role')
 
-def k8srolebinding():
-    run_res_crud_cmd('rolebinding')
-
 def k8srolebind():
     run_res_crud_cmd('rolebinding')
+
+def k8scrole():
+    run_res_crud_cmd('clusterrole')
+
+def k8scrolebind():
+    run_res_crud_cmd('clusterrolebinding')
 
 # storageclasses
 def k8ssc():

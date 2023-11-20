@@ -13,7 +13,7 @@ k8s命令很多，难记又难打，非常艰难；
 pip install k8scmd
 ```
 
-## 使用
+## 使用: 简化k8s命令
 1. k8sstart/kstart: 启动 kubelet 服务
 ```
 k8sstart
@@ -418,14 +418,99 @@ k8ssc @nginx
 k8ssc -l app=nginx
 ```
 
-28. k8sexec/kexec: 在pod中执行命令
+28. k8saccount/kaccount: 查删改 ServiceAccount
+```sh
+# 查看所有ServiceAccount资源列表
+k8saccount
+k8saccount -o yaml
+# 查看单个ServiceAccount资源详情
+k8saccount 资源名
+k8saccount 资源名 -o yaml
+# 删除单个ServiceAccount资源
+k8saccount 资源名 -d
+# 编辑单个ServiceAccount资源
+k8saccount 资源名 -e
+# 过滤指定标签的ServiceAccount资源列表，以下2个命令等价
+k8saccount @nginx
+k8saccount -l app=nginx
+```
+
+29. k8srole/krole: 查删改 Role
+```sh
+# 查看所有Role资源列表
+k8srole
+k8srole -o yaml
+# 查看单个Role资源详情
+k8srole 资源名
+k8srole 资源名 -o yaml
+# 删除单个Role资源
+k8srole 资源名 -d
+# 编辑单个Role资源
+k8srole 资源名 -e
+# 过滤指定标签的Role资源列表，以下2个命令等价
+k8srole @nginx
+k8srole -l app=nginx
+```
+
+30. k8srolebind/krolebind: 查删改 RoleBinding
+```sh
+# 查看所有RoleBinding资源列表
+k8srolebind
+k8srolebind -o yaml
+# 查看单个RoleBinding资源详情
+k8srolebind 资源名
+k8srolebind 资源名 -o yaml
+# 删除单个RoleBinding资源
+k8srolebind 资源名 -d
+# 编辑单个RoleBinding资源
+k8srolebind 资源名 -e
+# 过滤指定标签的RoleBinding资源列表，以下2个命令等价
+k8srolebind @nginx
+k8srolebind -l app=nginx
+```
+
+31. k8scrole/kcrole: 查删改 ClusterRole
+```sh
+# 查看所有ClusterRole资源列表
+k8scrole
+k8scrole -o yaml
+# 查看单个ClusterRole资源详情
+k8scrole 资源名
+k8scrole 资源名 -o yaml
+# 删除单个ClusterRole资源
+k8scrole 资源名 -d
+# 编辑单个ClusterRole资源
+k8scrole 资源名 -e
+# 过滤指定标签的ClusterRole资源列表，以下2个命令等价
+k8scrole @nginx
+k8scrole -l app=nginx
+```
+
+32. k8scrolebind/kcrolebind: 查删改 ClusterRoleBinding
+```sh
+# 查看所有ClusterRoleBinding资源列表
+k8scrolebind
+k8scrolebind -o yaml
+# 查看单个ClusterRoleBinding资源详情
+k8scrolebind 资源名
+k8scrolebind 资源名 -o yaml
+# 删除单个ClusterRoleBinding资源
+k8scrolebind 资源名 -d
+# 编辑单个ClusterRoleBinding资源
+k8scrolebind 资源名 -e
+# 过滤指定标签的ClusterRoleBinding资源列表，以下2个命令等价
+k8scrolebind @nginx
+k8scrolebind -l app=nginx
+```
+
+33. k8sexec/kexec: 在pod中执行命令
 ```sh
 k8sexec Pod资源名 命令
 # 例如
 k8sexec nginx ls -l
 ```
 
-29. k8sbash/kbash: 进入pod bash
+34. k8sbash/kbash: 进入pod bash
 ```sh
 k8sbash Pod资源名
 k8sbash Pod资源名:容器名
@@ -433,7 +518,7 @@ k8sbash Pod资源名:容器名
 k8sbash nginx
 ```
 
-30. k8ssh/ksh: 进入pod sh
+35. k8ssh/ksh: 进入pod sh
 ```sh
 k8ssh Pod资源名
 k8ssh Pod资源名:容器名
@@ -441,7 +526,7 @@ k8ssh Pod资源名:容器名
 k8ssh nginx
 ```
 
-31. k8slog/klog: 查看pod日志
+36. k8slog/klog: 查看pod日志
 ```sh
 k8slog Pod资源名 [-f]
 # 例如
@@ -449,38 +534,38 @@ k8slog nginx
 k8slog nginx -f
 ```
 
-32. k8sletlog/kletlog: 查看kubelet服务日志
+37. k8sletlog/kletlog: 查看kubelet服务日志
 ```sh
 k8sletlog
 k8sletlog -f
 ```
 
-33. k8screate/kcreate: 简化`kubectl create -f`命令
+38. k8screate/kcreate: 简化`kubectl create -f`命令
 ```sh
 k8screate a.yml b.yml
 ```
 
-34. k8sapply/kapply: 简化`kubectl apply -f`命令
+39. k8sapply/kapply: 简化`kubectl apply -f`命令
 ```sh
 k8sapply a.yml b.yml
 ```
 
-35. k8sdelete/kdelete: 简化`kubectl delete -f`命令
+40. k8sdelete/kdelete: 简化`kubectl delete -f`命令
 ```sh
 k8sdelete a.yml b.yml
 ```
 
-36. k8sdiff/kdiff: 简化`kubectl diff -f`命令
+41. k8sdiff/kdiff: 简化`kubectl diff -f`命令
 ```sh
 k8sdiff a.yml b.yml
 ```
 
-37. k8sscale/kscale: 扩容
+42. k8sscale/kscale: 扩容
 ```sh
 k8sscale Deployment资源名 副本数
 ```
 
-38. k8shistory/khistory: 查看 Deployment 历史记录
+43. k8shistory/khistory: 查看 Deployment 历史记录
 ```sh
 # 查看所有历史版本
 k8shistory Deployment资源名
@@ -488,7 +573,7 @@ k8shistory Deployment资源名
 k8shistory Deployment资源名 版本号
 ```
 
-39. k8srollback/krollback: 查看 Deployment 历史记录
+44. k8srollback/krollback: 查看 Deployment 历史记录
 ```sh
 # 回滚到上一个版本
 k8srollback Deployment资源名
@@ -496,12 +581,12 @@ k8srollback Deployment资源名
 k8srollback Deployment资源名 版本号
 ```
 
-40. k8sgetlabels/kgetlabels: 切换是否显示标签，会改写配置文件`~/.kube/k8scmd.yml`, 用于控制全局各个资源列表(即kubectl get命令)的显示
+45. k8sgetlabels/kgetlabels: 切换是否显示标签，会改写配置文件`~/.kube/k8scmd.yml`, 用于控制全局各个资源列表(即kubectl get命令)的显示
 ```sh
 k8sgetlabels
 ```
 
-41. k8sgetoutput/kgetoutput: 指定输出格式，会改写配置文件`~/.kube/k8scmd.yml`, 用于控制全局各个资源列表(即kubectl get命令)的显示
+46. k8sgetoutput/kgetoutput: 指定输出格式，会改写配置文件`~/.kube/k8scmd.yml`, 用于控制全局各个资源列表(即kubectl get命令)的显示
 ```sh
 # 指定输出格式
 k8sgetoutput yaml
@@ -509,7 +594,7 @@ k8sgetoutput yaml
 k8sgetoutput
 ```
 
-42. k8sgetns/kgetns: 指定过滤的命名空间，会改写配置文件`~/.kube/k8scmd.yml`, 用于控制全局各个资源列表(即kubectl get命令)的显示
+47. k8sgetns/kgetns: 指定过滤的命名空间，会改写配置文件`~/.kube/k8scmd.yml`, 用于控制全局各个资源列表(即kubectl get命令)的显示
 ```sh
 # 指定过滤的命名空间
 k8sgetns yaml
@@ -517,7 +602,7 @@ k8sgetns yaml
 k8sgetns
 ```
 
-43. k8sapi/kapi: 查看api资源文档
+48. k8sapi/kapi: 查看api资源文档
 ```sh
 # 查看所有api资源
 k8sapi
@@ -528,11 +613,14 @@ k8sapi pod
 k8sapi pods.spec.containers
 ```
 
-44. k8sbuild/kbuild: 替代`docker build`命令，用于构建docker镜像，并将镜像导入containerd的k8s命名空间中
+49. k8sbuild/kbuild: 替代`docker build`命令，用于构建docker镜像，并将镜像导入containerd的k8s命名空间中
 ```sh
 k8sbuild -t rpcserver .
 kbuild -t 192.168.0.182:5000/rpcserver:3.0.0 .
 ```
+
+## 使用: 精简Argo Workflows命令
+参考 [argo-cmd](argo-cmd.md)
 
 ## 全局配置 
 配置文件`~/.kube/k8scmd.yml`, 用于控制全局各个资源列表(即kubectl get命令)的显示
