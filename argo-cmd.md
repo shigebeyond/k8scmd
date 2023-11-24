@@ -19,12 +19,27 @@ wf -l app=nginx
 wfsubmit 资源文件
 ```
 
-3. wfclear: 删除所有 Workflow
+3. wftsubmit: 将 WorkflowTemplate 提交为 Workflow
+```
+wftsubmit 流程模板名
+```
+
+4. cwftsubmit: 将 ClusterWorkflowTemplate 提交为 Workflow
+```
+cwftsubmit 集群级流程模板名
+```
+
+5. cwfsubmit: 将 CronWorkflow 提交为 Workflow
+```
+cwftsubmit 定时流程名
+```
+
+6. wfclear: 删除所有 Workflow
 ```
 wfclear
 ```
 
-4. wflog: 查看指定 Workflow 的日志
+7. wflog: 查看指定 Workflow 的日志
 ```
 wflog 流程名
 # 查看最新流程的日志，下面2个命令等价
@@ -32,7 +47,15 @@ wflog @latest
 wflog
 ```
 
-5. wfretry: 重试指定 Workflow
+8. wflog: 查看指定 Workflow 的每个pod的日志
+```
+wfpodlog 流程名
+# 查看最新流程的日志，下面2个命令等价
+wfpodlog @latest
+wfpodlog
+```
+
+9. wfretry: 重试指定 Workflow
 ```
 wfretry 流程名
 # 重试最新流程，下面2个命令等价
@@ -40,7 +63,7 @@ wfretry @latest
 wfretry
 ```
 
-6. wfsuspend: 暂停指定 Workflow 
+10. wfsuspend: 暂停指定 Workflow 
 ```
 wfsuspend 流程名
 # 暂停最新流程，下面2个命令等价
@@ -48,7 +71,7 @@ wfsuspend @latest
 wfsuspend
 ```
 
-7. wfresume: 恢复 Workflow 
+11. wfresume: 恢复 Workflow 
 ```
 wfresume 流程名
 # 恢复最新流程，下面2个命令等价
@@ -56,7 +79,7 @@ wfresume @latest
 wfresume
 ```
 
-8. cwf: 查删改 CronWorkflow
+12. cwf: 查删改 CronWorkflow
 ```sh
 # 查看所有CronWorkflow资源列表
 cwf
@@ -71,12 +94,12 @@ cwf @nginx
 cwf -l app=nginx
 ```
 
-9. cwfcreate: 创建 CronWorkflow
+13. cwfcreate: 创建 CronWorkflow
 ```
 cwfcreate 资源文件
 ```
 
-10. cwfsuspend: 暂停指定 CronWorkflow 
+14. cwfsuspend: 暂停指定 CronWorkflow 
 ```
 cwfsuspend 定时流程名
 # 暂停最新流程，下面2个命令等价
@@ -84,7 +107,7 @@ cwfsuspend @latest
 cwfsuspend
 ```
 
-11. cwfresume: 恢复 CronWorkflow 
+15. cwfresume: 恢复 CronWorkflow 
 ```
 cwfresume 定时流程名
 # 恢复最新流程，下面2个命令等价
@@ -92,7 +115,7 @@ cwfresume @latest
 cwfresume
 ```
 
-12. wft: 查删改 WorkflowTemplate
+16. wft: 查删改 WorkflowTemplate
 ```sh
 # 查看所有WorkflowTemplate资源列表
 wft
@@ -107,12 +130,12 @@ wft @nginx
 wft -l app=nginx
 ```
 
-13. wftcreate: 创建 WorkflowTemplate
+17. wftcreate: 创建 WorkflowTemplate
 ```
 wftcreate 资源文件
 ```
 
-14. cwft: 查删改 ClusterWorkflowTemplate
+18. cwft: 查删改 ClusterWorkflowTemplate
 ```sh
 # 查看所有ClusterWorkflowTemplate资源列表
 cwft
@@ -127,11 +150,10 @@ cwft @nginx
 cwft -l app=nginx
 ```
 
-15. cwftcreate: 创建 ClusterWorkflowTemplate
+19. cwftcreate: 创建 ClusterWorkflowTemplate
 ```
 cwftcreate 资源文件
 ```
-
 
 ## 简化Argo Workflows相关的k8s资源管理命令(/usr/bin/kubectl)
 1. k8swf/kwf: 查删改 Argo Workflow

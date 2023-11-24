@@ -7,18 +7,23 @@ from pyutilb.file import *
 from pyutilb.ts import age2seconds
 from pyutilb.util import replace_sysarg
 
-# 修正k8s命令输出
-def fix_k8s_cmd_output(cmd):
-    # get pod命令输出的RESTARTS(重启次数)列有括号，如1 (9h ago) => 去掉
+# 修正k8s命令转df的输出
+def fix_k8s_cmd_df_output(cmd):
     def fix(output):
+        # get pod命令输出的RESTARTS(重启次数)列有括号，如1 (9h ago) => 去掉
         if ' get pod' in cmd:
             return re.sub(r"\(.+\)", "", output)
+        # argo get中只取子步骤部分
+        if cmd.startswith('argo get '):
+            i = output.index('STEP')
+            output = output[i:].replace('[0m', '').replace('├─', '').replace('└─', '')
+            return re.sub(r'\[32m(.) ', lambda mat: mat.group(1), output)
         return output
     return fix
 
 # 同步执行命令，并将输出整理为df + 修正k8s命令输出
 def run_command_return_dataframe2(cmd):
-    return run_command_return_dataframe(cmd, fix_k8s_cmd_output(cmd))
+    return run_command_return_dataframe(cmd, fix_k8s_cmd_df_output(cmd))
 
 # --------------------------- k8s命令帮助方法 ---------------------------
 # 配置文件

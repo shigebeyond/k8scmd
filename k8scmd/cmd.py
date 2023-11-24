@@ -508,6 +508,27 @@ def wfsubmit():
         w = '--watch'
     run_cmd(f"argo submit {build_ns_option(False)} $1_ {w}")
 
+# 提交流程模板做流程实例
+def wftsubmit():
+    w = ''
+    if '--watch' not in sys.argv:
+        w = '--watch'
+    run_cmd(f"argo submit --from {build_ns_option(False)} workflowtemplate/$1_ {w}")
+
+# 提交集群级流程模板做流程实例
+def cwftsubmit():
+    w = ''
+    if '--watch' not in sys.argv:
+        w = '--watch'
+    run_cmd(f"argo submit --from {build_ns_option(False)} clusterworkflowtemplate/$1_ {w}")
+
+# 提交定时流程做流程实例
+def cwfsubmit():
+    w = ''
+    if '--watch' not in sys.argv:
+        w = '--watch'
+    run_cmd(f"argo submit --from {build_ns_option(False)} cronwf/$1_ {w}")
+
 # 删除所有流程
 def wfclear():
     r = input("Are you delete all workflow? (Y/N) ").lower()
@@ -517,6 +538,32 @@ def wfclear():
 def wflog():
     name = get_argo_name('wf')
     run_cmd(f"argo logs {name} $2_")
+
+def wfpodlog():
+    # 获得流程名
+    name = get_argo_name('wf')
+    # 获得命名空间
+    ns = 'default'
+    if ' -n ' in name:
+        ns = name.split(' -n ')[1]
+    # 获得流程的细节，包含步骤+pod
+    cmd = f"argo get {name}"
+    df = run_command_return_dataframe2(cmd)
+    # 逐个步骤处理
+    for i, row in df.iterrows():
+        step = row['STEP']
+        template = row['TEMPLATE']
+        # 1 入口
+        if i == 0:
+            print(f"Workflow {step} has {len(df)-1} steps: ")
+            continue
+
+        # 2 子步骤
+        pod = row['PODNAME']
+        # 打印pod日志
+        print(f"\n------- {i}. {step}(): template={template}, POD={pod} -------")
+        os.system(f'kubectl logs {pod} -n {ns} -c main')
+
 
 def wfretry():
     name = get_argo_name('wf')
@@ -564,4 +611,5 @@ if __name__ == '__main__':
     # k8singrule()
     # k8ssvcpod()
     # k8sbuild()
-    cwft()
+    #cwft()
+    wfpodlog()
