@@ -346,8 +346,15 @@ def k8sletlog():
 
 def build_apply_files():
     # return sys.argv[1] # 可能有多个文件，如对参数 namenode*.yml，命令会拿到多个文件
-    files = sys.argv[1:]
-    return ' -f '.join(files)
+    args = sys.argv[1:]
+    idx = 0
+    for f in args:
+        if f.startswith('-'): # 选项
+            break
+        idx += 1
+    files = args[:idx]
+    opts = args[idx:]
+    return ' -f '.join(files) + ' ' + ' '.join(opts)
 
 def k8sapply():
     #run_cmd("kubectl apply --record=true -f $1_")
