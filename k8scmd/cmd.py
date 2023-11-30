@@ -510,31 +510,35 @@ def wf():
     run_argo_crud_cmd('wf')
 
 def wfsubmit():
+    name = get_argo_name('wf')
     w = ''
     if '--watch' not in sys.argv:
         w = '--watch'
-    run_cmd(f"argo submit {build_ns_option(False)} $1_ {w}")
+    run_cmd(f"argo submit {name} $2_ {w}")
 
 # 提交流程模板做流程实例
 def wftsubmit():
+    name = get_argo_name('wft')
     w = ''
     if '--watch' not in sys.argv:
         w = '--watch'
-    run_cmd(f"argo submit --from {build_ns_option(False)} workflowtemplate/$1_ {w}")
+    run_cmd(f"argo submit --from workflowtemplate/{name} $2_ {w}")
 
 # 提交集群级流程模板做流程实例
 def cwftsubmit():
+    name = get_argo_name('cwft')
     w = ''
     if '--watch' not in sys.argv:
         w = '--watch'
-    run_cmd(f"argo submit --from {build_ns_option(False)} clusterworkflowtemplate/$1_ {w}")
+    run_cmd(f"argo submit --from clusterworkflowtemplate/{name} $2_ {w}")
 
 # 提交定时流程做流程实例
 def cwfsubmit():
+    name = get_argo_name('cwf')
     w = ''
     if '--watch' not in sys.argv:
         w = '--watch'
-    run_cmd(f"argo submit --from {build_ns_option(False)} cronwf/$1_ {w}")
+    run_cmd(f"argo submit --from cronwf/{name} $2_ {w}")
 
 # 删除所有流程
 def wfclear():
