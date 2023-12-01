@@ -42,6 +42,9 @@ def k8sno():
 def k8spod():
     run_res_crud_cmd('pod')
 
+def k8spo():
+    k8spod()
+
 def k8ssvc():
     run_res_crud_cmd('svc')
 
